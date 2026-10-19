@@ -15,8 +15,9 @@ export function project(lat: number, lon: number) {
 
 const plant = { name: "Palwal", lat: 28.14, lon: 77.33 };
 
-// exactly as marked on the company brochure's "Our Presence" map (Haryana = manufacturing unit)
-const PROJECT_STATES = ["hp", "rj", "up", "br", "mh"];
+// brochure "Our Presence" map (Haryana = manufacturing unit) plus Madhya Pradesh (Inoflex, Indore) and
+// Uttarakhand (KS Industries & Ambika, Haridwar), where featured projects are. Pending client confirmation.
+const PROJECT_STATES = ["hp", "rj", "up", "br", "mh", "mp", "ut"];
 
 export default function IndiaMap({ className = "" }: { className?: string }) {
   const p = project(plant.lat, plant.lon);
@@ -26,7 +27,7 @@ export default function IndiaMap({ className = "" }: { className?: string }) {
         viewBox="0 0 612 696"
         className={className}
         role="img"
-        aria-label="Map of India: manufacturing unit in Haryana; projects delivered in Himachal Pradesh, Rajasthan, Uttar Pradesh, Bihar and Maharashtra"
+        aria-label="Map of India: manufacturing unit in Haryana; projects delivered in Himachal Pradesh, Uttarakhand, Rajasthan, Uttar Pradesh, Madhya Pradesh, Bihar and Maharashtra"
       >
         <g data-draw>
           {map.locations.map((l) => {

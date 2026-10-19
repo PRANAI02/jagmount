@@ -259,8 +259,8 @@ export const projects: Project[] = [
   { slug: "gopal-garden", name: "Gopal Garden", place: "Faridabad", state: "Haryana", sqft: 10000, img: "/img/projects/gopal-garden.jpg", type: "Box column structure" },
 ];
 
-/** States marked "Projects delivered" on the brochure's presence map (Haryana is the manufacturing unit). */
-export const projectStates = ["Himachal Pradesh", "Rajasthan", "Uttar Pradesh", "Bihar", "Maharashtra"];
+/** Brochure presence-map states plus MP and Uttarakhand (featured projects there; awaiting client confirmation). */
+export const projectStates = ["Himachal Pradesh", "Uttarakhand", "Rajasthan", "Uttar Pradesh", "Madhya Pradesh", "Bihar", "Maharashtra"];
 export const projectStatesText = `${projectStates.slice(0, -1).join(", ")} and ${projectStates.at(-1)}`;
 
 export const clients: { name: string; logo?: string }[] = [
