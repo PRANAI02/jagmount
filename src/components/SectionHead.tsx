@@ -1,4 +1,4 @@
-/** Section label with a CAD dimension line, then a plain heading. */
+/** Section label, then a plain heading. */
 export default function SectionHead({
   label,
   title,
@@ -19,9 +19,6 @@ export default function SectionHead({
     <div className={className}>
       <div className="mono mb-5 flex items-center gap-4 text-[11px] text-mute">
         <span>{label}</span>
-        <span className="relative h-px max-w-24 flex-1 bg-[var(--line-strong)]" data-dim>
-          <span className="absolute -top-[4px] right-0 h-[9px] w-px bg-[var(--line-strong)]" />
-        </span>
       </div>
       <H className="display text-[clamp(26px,3.2vw,42px)]" data-split>
         {title}
