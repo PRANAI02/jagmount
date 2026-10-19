@@ -164,7 +164,7 @@ export function buildPEB(lowPower: boolean) {
   for (let z = -hz; z <= hz + 0.01; z += bay) frames.push(z);
 
   // slab
-  const slab = new THREE.Mesh(new THREE.BoxGeometry(span + 3, 0.35, length + 3), new THREE.MeshStandardMaterial({ color: "#2a2c31", roughness: 0.95 }));
+  const slab = new THREE.Mesh(new THREE.BoxGeometry(span + 3, 0.35, length + 3), new THREE.MeshStandardMaterial({ color: "#dcddd9", roughness: 0.95 }));
   slab.position.y = -0.17;
   slab.receiveShadow = true;
   root.add(slab);

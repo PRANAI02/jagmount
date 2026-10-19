@@ -16,11 +16,14 @@ export default function Lightbox({
   className = "",
   tileClass = "aspect-[4/3]",
   contain = false,
+  render,
 }: {
   items: Shot[];
   className?: string;
   tileClass?: string;
   contain?: boolean;
+  /** custom trigger instead of the thumbnail grid */
+  render?: () => React.ReactNode;
 }) {
   const [idx, setIdx] = useState<number | null>(null);
   const box = useRef<HTMLDivElement>(null);
@@ -67,12 +70,16 @@ export default function Lightbox({
 
   return (
     <>
+      {render ? (
+        <button type="button" onClick={() => open(0)} aria-label={`Open ${items[0].cap}`}>
+          {render()}
+        </button>
+      ) : (
       <div className={className} data-stagger="0.04">
         {items.map((it, i) => (
           <button
             key={it.src + i}
             onClick={() => open(i)}
-            data-cursor="View"
             className={`group relative block w-full overflow-hidden bg-steel text-left ${tileClass}`}
             aria-label={`Open ${it.cap}`}
           >
@@ -83,18 +90,19 @@ export default function Lightbox({
               sizes="(min-width:1024px) 25vw, 50vw"
               className={`img-steel ${contain ? "object-contain p-3" : "object-cover"} group-hover:scale-105`}
             />
-            <span className="absolute inset-x-0 bottom-0 translate-y-full bg-ink/85 p-3 text-[13px] transition-transform duration-500 ease-[cubic-bezier(.2,.7,.2,1)] group-hover:translate-y-0">
+            <span className="absolute inset-x-0 bottom-0 translate-y-full bg-white/95 p-3 text-[13px] transition-transform duration-500 ease-[cubic-bezier(.2,.7,.2,1)] group-hover:translate-y-0">
               {it.cap}
             </span>
           </button>
         ))}
       </div>
+      )}
 
       {idx !== null &&
         createPortal(
           <div
             ref={box}
-            className="fixed inset-0 z-[110] flex flex-col bg-ink/95 backdrop-blur-sm"
+            className="fixed inset-0 z-[110] flex flex-col bg-white/97"
             role="dialog"
             aria-modal="true"
             aria-label={items[idx].cap}

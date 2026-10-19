@@ -37,18 +37,18 @@ export default function ProcessLine() {
         <div data-fill className="absolute inset-0 origin-top bg-orange" style={{ transform: "scaleY(0)" }} />
         <div
           data-bead
-          className="absolute left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
-          style={{ top: 0, boxShadow: "0 0 18px 6px rgba(255,106,0,.8)" }}
+          className="absolute left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange"
+          style={{ top: 0, boxShadow: "0 0 18px 6px rgba(236,100,17,.45)" }}
         />
       </div>
-      <ol className="space-y-16 md:space-y-28">
+      <ol className="space-y-12 md:space-y-16">
         {process.map((p, i) => (
           <li key={p.n} data-node className="group relative md:grid md:grid-cols-2 md:gap-24">
             <span className="absolute -left-12 top-2 flex h-6 w-6 items-center justify-center border border-[var(--line-strong)] bg-ink transition-colors duration-300 group-data-[on]:border-orange group-data-[on]:bg-orange md:left-1/2 md:-translate-x-1/2">
-              <span className="h-1.5 w-1.5 bg-bone group-data-[on]:bg-ink" />
+              <span className="h-1.5 w-1.5 bg-bone group-data-[on]:bg-white" />
             </span>
             <div className={i % 2 ? "md:col-start-2" : "md:text-right"}>
-              <h3 className="display mt-2 text-[clamp(32px,4.4vw,72px)] text-bone/25 transition-colors duration-500 group-data-[on]:text-bone">{p.title}</h3>
+              <h3 className="display mt-2 text-[clamp(24px,2.8vw,38px)] text-bone/30 transition-colors duration-500 group-data-[on]:text-bone">{p.title}</h3>
               <p className={`mt-3 max-w-sm text-bone/65 ${i % 2 ? "" : "md:ml-auto"}`}>{p.body}</p>
             </div>
           </li>

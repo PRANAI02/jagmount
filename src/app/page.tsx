@@ -1,120 +1,147 @@
 import Image from "next/image";
-import HeroBuild from "@/components/peb/HeroBuild";
-import Marquee from "@/components/Marquee";
-import ServicesRail from "@/components/ServicesRail";
+import PebBuild from "@/components/peb/PebBuild";
 import FrameTypes from "@/components/FrameTypes";
 import PlasmaReveal from "@/components/PlasmaReveal";
 import ProjectIndex from "@/components/ProjectIndex";
 import IndiaMap from "@/components/IndiaMap";
 import SectionHead from "@/components/SectionHead";
 import Button from "@/components/Button";
-import { clients, machines, sectors, stats, why } from "@/lib/content";
+import Journeys from "@/components/Journeys";
+import ClientWall from "@/components/ClientWall";
+import { journeys, machines, metrics, projects, projectStates, stats, why } from "@/lib/content";
 
 export default function Home() {
-  const sectorWords = sectors.flatMap((s) => s.items.slice(0, 3));
   return (
     <>
-      <HeroBuild />
-
-      {/* sectors marquee */}
-      <section className="relative border-y border-[var(--line)] bg-ink py-8 md:py-12" aria-label="Sectors we build for">
-        <Marquee items={sectorWords.slice(0, 9).map((w) => w)} className="display text-[clamp(40px,7vw,120px)]" speed={70} />
-        <Marquee items={sectorWords.slice(9).map((w) => w)} reverse className="display outline-text mt-2 text-[clamp(40px,7vw,120px)]" speed={55} />
-      </section>
-
-      {/* intro */}
-      <section className="wrap relative grid gap-16 py-28 md:py-40 lg:grid-cols-[1.25fr_1fr]">
+      {/* hero: real photograph, recommended headline, two journeys */}
+      <section className="wrap grid gap-10 pb-14 pt-32 md:pb-20 md:pt-40 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14">
         <div>
-          <div className="mono mb-10 flex items-center gap-3 text-[11px] text-mute">Who we are</div>
-          <p className="text-[clamp(26px,3.4vw,52px)] font-medium leading-[1.12] tracking-tight" data-scrub-words>
-            Jagmount is the PEB arm of Jagwati Metals Engineering LLP. Founded by people with more than twenty years in construction and infrastructure, we take
-            industrial and warehousing projects from concept and design all the way to completion.
-          </p>
-          <div className="mt-12" data-reveal>
-            <Button href="/about">Our story</Button>
+          <div className="mono mb-5 flex items-center gap-3 text-[11px] text-orange">
+            <span className="h-2 w-2 bg-orange" />
+            Pre-engineered buildings · Structural steel
           </div>
+          <h1 className="display text-[clamp(34px,4.8vw,64px)]" data-split>
+            Industrial Steel Buildings. Engineered for Your Next Stage of Growth.
+          </h1>
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-bone/75 md:text-lg" data-reveal data-delay="0.2">
+            Jagmount designs, fabricates and erects pre-engineered buildings for industrial and warehousing projects, and fabricates structural steel to
+            drawings for the trade, from our 6000 MT plant in Palwal, Haryana.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3" data-reveal data-delay="0.3">
+            <Button href={journeys.peb.href}>{journeys.peb.cta}</Button>
+            <Button href={journeys.fab.href} variant="dark">
+              {journeys.fab.cta}
+            </Button>
+          </div>
+          <dl className="mt-10 grid max-w-xl grid-cols-3 gap-4 border-t border-[var(--line)] pt-6" data-reveal data-delay="0.4">
+            {[
+              [metrics.capacity + " MT", "Annual capacity"],
+              [metrics.delivered, "Projects delivered"],
+              [metrics.pebYears + " yrs", "In PEB"],
+            ].map(([v, k]) => (
+              <div key={k}>
+                <dd className="display text-[clamp(20px,2.2vw,28px)]">{v}</dd>
+                <dt className="mt-1 text-[13px] text-mute">{k}</dt>
+              </div>
+            ))}
+          </dl>
         </div>
         <div className="relative">
-          <div className="relative aspect-[4/5] overflow-hidden ticks" data-clip>
-            <Image
-              src="/img/site/welder.jpg"
-              alt="Welder fabricating built-up steel members"
-              fill
-              sizes="(min-width:1024px) 40vw, 100vw"
-              className="object-cover"
-            />
+          <div className="relative aspect-[10/9] overflow-hidden bg-steel" data-clip>
+            <Image src="/img/gallery/g18.jpg" alt="Aerial view of a completed Jagmount pre-engineered industrial building" fill priority sizes="(min-width:1024px) 45vw, 100vw" className="object-cover" />
           </div>
-          <div className="mono absolute -bottom-5 left-4 bg-orange px-3 py-2 text-[10px] text-ink md:-left-6">Fabrication bay · Palwal</div>
+          <div className="mono absolute -bottom-4 left-4 bg-white px-3 py-2 text-[10px] shadow-md">Completed industrial building</div>
         </div>
       </section>
 
-      {/* stats */}
-      <section className="wrap pb-28 md:pb-40">
-        <div className="grid grid-cols-2 border-l border-t border-[var(--line)] lg:grid-cols-4">
-          {stats.map((s) => (
-            <div key={s.label} className="group relative overflow-hidden border-b border-r border-[var(--line)] p-5 md:p-8">
-              <span className="absolute inset-0 origin-left scale-x-0 bg-steel transition-transform duration-700 ease-[cubic-bezier(.2,.7,.2,1)] group-hover:scale-x-100" />
-              <div className="relative">
-                <div className="display flex items-baseline gap-1 text-[clamp(40px,6vw,92px)]">
+      {/* two journeys */}
+      <section className="wrap pb-16 md:pb-24">
+        <SectionHead
+          label="How can we help?"
+          title="Two ways to work with us"
+          intro="Building owners and developers get a complete PEB. The steel trade gets fabrication capacity to their own drawings. Each has its own enquiry form."
+          className="mb-10"
+        />
+        <Journeys />
+      </section>
+
+      {/* intro + stats */}
+      <section className="bg-graphite py-16 md:py-24">
+        <div className="wrap grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:items-center">
+          <div>
+            <SectionHead
+              label="Who we are"
+              title="The PEB arm of Jagwati Metals Engineering LLP"
+              intro="Founded by professionals with more than twenty years in construction and infrastructure, Jagmount takes industrial and warehousing projects from concept and design to completion, with fabrication in our own plant."
+            />
+            <div className="mt-8" data-reveal>
+              <Button href="/about" variant="ghost">
+                About Jagmount
+              </Button>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 border-l border-t border-[var(--line-strong)] bg-white">
+            {stats.map((s) => (
+              <div key={s.label} className="border-b border-r border-[var(--line-strong)] p-5 md:p-7">
+                <div className="display flex items-baseline gap-1 text-[clamp(30px,3.4vw,46px)]">
                   <span data-count={s.value} data-format="in">
                     {s.value.toLocaleString("en-IN")}
                   </span>
                   <span className="text-orange">{s.suffix}</span>
+                  {s.unit && <span className="ml-1 text-[0.4em] text-mute">{s.unit}</span>}
                 </div>
-                {s.unit && <div className="mono mt-1 text-[11px] text-orange">{s.unit}</div>}
-                <p className="mt-4 max-w-[24ch] text-sm text-bone/65">{s.label}</p>
+                <p className="mt-2 text-[14px] text-bone/65">{s.label}</p>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
-      <ServicesRail />
+      {/* 3D: components of a PEB */}
+      <PebBuild />
 
       {/* frame types */}
-      <section className="wrap py-28 md:py-40">
-        <div className="mb-14 grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:items-end">
-          <SectionHead n="03" label="Structural frames" title="Structural" outline="frames." />
-          <p className="max-w-md text-base leading-relaxed text-bone/70 md:text-lg" data-reveal>
-            Clear span, multi-span, multi-gable or single slope. Each frame is designed for strength, stability and the exact building your process needs.
+      <section className="wrap py-16 md:py-24">
+        <div className="mb-10 grid gap-6 lg:grid-cols-[1.2fr_1fr] lg:items-end">
+          <SectionHead label="Structural frames" title="Structural frames" />
+          <p className="max-w-md text-bone/70" data-reveal>
+            Clear span, multi-span, multi-gable or single slope. Each frame is designed for strength, stability and the building your process needs.
           </p>
         </div>
         <FrameTypes />
       </section>
 
       {/* manufacturing teaser */}
-      <section className="relative" aria-label="Manufacturing">
-        <PlasmaReveal src="/img/site/fab-hall.jpg" alt="Jagmount fabrication hall with built-up H-beams">
-          <div className="wrap flex flex-col justify-between gap-6 pb-8 md:flex-row md:items-end md:pb-12">
+      <section aria-label="Manufacturing">
+        <PlasmaReveal src="/img/site/welder.jpg" alt="Welder fabricating built-up steel members at the Palwal plant">
+          <div className="wrap flex flex-col justify-between gap-4 pb-8 md:flex-row md:items-end md:pb-12">
             <div>
-              <div className="mono mb-3 text-[11px] text-orange">Our manufacturing</div>
-              <div className="display text-[clamp(64px,15vw,260px)] leading-[0.8]">
+              <div className="mono mb-2 text-[11px] text-orange-2">Our manufacturing</div>
+              <div className="display text-[clamp(48px,8vw,120px)] leading-none">
                 <span data-count="6000">6000</span>
-                <span className="ml-3 align-top text-[0.25em] text-orange">MT</span>
+                <span className="ml-2 align-top text-[0.3em]">MT</span>
               </div>
             </div>
-            <p className="mono max-w-xs text-[11px] leading-relaxed text-bone/80">Annual fabrication capacity · Plot 23/2, Pingore, Palwal, Haryana</p>
+            <p className="mono max-w-xs text-[11px] leading-relaxed text-white/85">Annual fabrication capacity · Plot 23/2, Pingore, Palwal, Haryana</p>
           </div>
         </PlasmaReveal>
-        <div className="wrap grid gap-12 py-20 md:py-28 lg:grid-cols-[1fr_1.3fr]">
+        <div className="wrap grid gap-10 py-14 md:py-20 lg:grid-cols-[1fr_1.3fr]">
           <div>
-            <h2 className="display text-[clamp(34px,4.6vw,72px)]">
-              <span className="block" data-split>
-                The backbone of
-              </span>
-              <span className="outline-orange block" data-split data-delay="0.1">
-                every structure.
-              </span>
-            </h2>
-            <div className="mt-10" data-reveal>
-              <Button href="/manufacturing">Inside the plant</Button>
+            <SectionHead label="In-house fabrication" title="The backbone of every structure" />
+            <div className="mt-8 flex flex-wrap gap-3" data-reveal>
+              <Button href="/manufacturing" variant="ghost">
+                Inside the plant
+              </Button>
+              <Button href={journeys.fab.href} variant="dark">
+                {journeys.fab.cta}
+              </Button>
             </div>
           </div>
           <ol className="border-t border-[var(--line)]" data-stagger>
             {machines.map((m) => (
-              <li key={m.n} className="group grid grid-cols-1 items-baseline gap-1 border-b border-[var(--line)] py-5 md:grid-cols-[1fr_1fr]">
-                <span className="text-xl font-semibold transition-transform duration-500 group-hover:translate-x-2 md:text-2xl">{m.title}</span>
-                <span className="mono text-[11px] text-mute md:text-right">{m.spec}</span>
+              <li key={m.title} className="grid grid-cols-1 gap-1 border-b border-[var(--line)] py-5 md:grid-cols-[1fr_1.2fr]">
+                <span className="text-lg font-semibold">{m.title}</span>
+                <span className="text-[15px] text-bone/70">{m.enables}</span>
               </li>
             ))}
           </ol>
@@ -122,79 +149,60 @@ export default function Home() {
       </section>
 
       {/* projects */}
-      <section className="wrap border-t border-[var(--line)] py-28 md:py-40">
-        <div className="mb-16 flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
-          <SectionHead n="05" label="Selected projects" title="Our" outline="projects." className="flex-1" />
-        </div>
+      <section className="wrap border-t border-[var(--line)] py-16 md:py-24">
+        <SectionHead label="Selected projects" title="Our projects" className="mb-10" />
         <ProjectIndex limit={6} />
-        <div className="mt-12 flex flex-wrap items-center justify-between gap-6" data-reveal>
-          <p className="mono text-[11px] text-mute">6 of 20+ delivered projects</p>
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-6" data-reveal>
+          <p className="text-[14px] text-mute">
+            {projects.length} featured of {metrics.delivered} projects delivered
+          </p>
           <Button href="/projects">All projects</Button>
         </div>
       </section>
 
       {/* presence */}
-      <section className="relative overflow-hidden bg-graphite py-28 md:py-40">
-        <div className="blueprint absolute inset-0 opacity-50" />
-        <div className="wrap relative grid items-center gap-16 lg:grid-cols-[1fr_1.1fr]">
+      <section className="bg-graphite py-16 md:py-24">
+        <div className="wrap grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
           <div>
             <SectionHead
-              n="06"
               label="Our presence"
-              title="Our"
-              outline="presence."
-              intro="Our manufacturing unit sits on the Delhi to Mumbai industrial corridor in Haryana, with projects delivered across Uttar Pradesh, Rajasthan, Himachal Pradesh, Bihar and Maharashtra."
+              title="Our presence"
+              intro={`Our manufacturing unit is in Palwal, Haryana, on the Delhi to Mumbai industrial corridor, with projects delivered across ${projectStates.slice(0, -1).join(", ")} and Haryana.`}
             />
-            <ul className="mono mt-10 grid grid-cols-2 gap-3 text-[11px]" data-stagger>
+            <ul className="mono mt-8 grid grid-cols-2 gap-3 text-[11px]" data-stagger>
               <li className="flex items-center gap-3">
                 <span className="h-3 w-3 bg-orange" /> Manufacturing unit
               </li>
               <li className="flex items-center gap-3">
                 <span
                   className="h-3 w-3 border border-orange"
-                  style={{ background: "repeating-linear-gradient(45deg,rgba(255,106,0,.5) 0 2px,transparent 2px 5px)" }}
-                />{" "}
+                  style={{ background: "repeating-linear-gradient(45deg,rgba(236,100,17,.5) 0 2px,transparent 2px 5px)" }}
+                />
                 Projects delivered
               </li>
             </ul>
           </div>
-          <div className="mx-auto w-full max-w-[560px]">
+          <div className="mx-auto w-full max-w-[520px]">
             <IndiaMap className="h-auto w-full" />
           </div>
         </div>
       </section>
 
       {/* clients */}
-      <section className="border-y border-[var(--line)] py-16 md:py-20" aria-label="Clients">
-        <div className="wrap mono mb-10 flex items-center justify-between text-[11px] text-mute">
-          <span>Trusted by</span>
-          <span>{clients.length} clients and counting</span>
-        </div>
-        <Marquee
-          speed={45}
-          sep={false}
-          items={clients.map((c) => (
-            <span
-              key={c.name}
-              className="mx-8 flex h-16 w-40 items-center justify-center opacity-60 transition-opacity hover:opacity-100 md:mx-14 md:h-20 md:w-48"
-            >
-              <Image src={c.logo} alt={c.name} width={300} height={150} className="max-h-full w-auto object-contain" />
-            </span>
-          ))}
-        />
+      <section className="wrap py-16 md:py-24" aria-label="Clients">
+        <SectionHead label="Our clients" title="Our clients" className="mb-10" />
+        <ClientWall />
       </section>
 
       {/* why us */}
-      <section className="wrap py-28 md:py-40">
-        <SectionHead n="08" label="Why Jagmount" title="Why" outline="choose us." className="mb-16" />
-        <div className="grid gap-px border border-[var(--line)] bg-[var(--line)] md:grid-cols-2" data-stagger>
+      <section className="wrap border-t border-[var(--line)] py-16 md:py-24">
+        <SectionHead label="Why Jagmount" title="Why choose us" className="mb-10" />
+        <div className="grid gap-px border border-[var(--line)] bg-[var(--line)] md:grid-cols-2 lg:grid-cols-4" data-stagger>
           {why.map((w) => (
-            <div key={w.title} className="group relative overflow-hidden bg-ink p-6 md:p-10">
-              <div className="relative">
-                <span className="mb-8 block h-2 w-8 bg-orange" />
-                <h3 className="display text-[clamp(24px,2.6vw,40px)]">{w.title}</h3>
-                <p className="mt-4 max-w-sm text-bone/65">{w.body}</p>
-              </div>
+            <div key={w.title} className="bg-white p-6 md:p-8">
+              <span className="mb-6 block h-1.5 w-8 bg-orange" />
+              <h3 className="text-lg font-semibold">{w.title}</h3>
+              <p className="mt-2 text-bone/65">{w.body}</p>
             </div>
           ))}
         </div>

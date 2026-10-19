@@ -1,59 +1,58 @@
 import Image from "next/image";
 
-/** Inner-page hero: oversized split title over a parallax photo with a CAD title block. */
+/** Inner-page hero: title and intro beside a framed photo, with a small spec block. */
 export default function PageHero({
   kicker,
   title,
   outline,
   img,
+  imgAlt = "",
   intro,
   meta,
+  children,
 }: {
   n?: string;
   kicker: string;
   title: string;
   outline?: string;
   img: string;
+  imgAlt?: string;
   intro: string;
-  meta: [string, string][];
+  meta?: [string, string][];
+  children?: React.ReactNode;
 }) {
   return (
-    <section className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden pb-10 pt-32 md:pb-14">
-      <div className="absolute inset-0">
-        <div className="absolute inset-[-12%_0]" data-parallax="10">
-          <Image src={img} alt="" fill priority sizes="100vw" className="object-cover opacity-45" style={{ filter: "grayscale(.5) contrast(1.1)" }} />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/40" />
-        <div className="blueprint absolute inset-0 opacity-60" />
-      </div>
-      <div className="wrap relative">
-        <div className="mono mb-6 flex items-center gap-3 text-[11px] text-orange">
+    <section className="wrap grid gap-10 pb-14 pt-32 md:pb-20 md:pt-40 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16">
+      <div>
+        <div className="mono mb-5 flex items-center gap-3 text-[11px] text-orange">
           <span className="h-2 w-2 bg-orange" />
           {kicker}
         </div>
-        <h1 className="display text-[clamp(32px,9.4vw,170px)]">
-          <span className="block" data-split="chars">
-            {title}
-          </span>
-          {outline && (
-            <span className="outline-orange block" data-split="chars" data-delay="0.2">
-              {outline}
-            </span>
-          )}
+        <h1 className="display text-[clamp(32px,4.6vw,60px)]" data-split>
+          {title}
+          {outline ? ` ${outline.replace(/\.$/, "")}` : ""}
         </h1>
-        <div className="mt-10 grid gap-8 border-t border-[var(--line)] pt-6 md:grid-cols-[1.4fr_1fr]">
-          <p className="max-w-xl text-base leading-relaxed text-bone/75 md:text-lg" data-reveal data-delay="0.4">
-            {intro}
-          </p>
-          <dl className="mono grid grid-cols-2 gap-px self-end border border-[var(--line)] bg-[var(--line)] text-[10px]" data-reveal data-delay="0.5">
+        <p className="mt-6 max-w-xl text-base leading-relaxed text-bone/75 md:text-lg" data-reveal data-delay="0.15">
+          {intro}
+        </p>
+        {children && (
+          <div className="mt-8" data-reveal data-delay="0.25">
+            {children}
+          </div>
+        )}
+        {meta && (
+          <dl className="mt-10 grid grid-cols-2 border-l border-t border-[var(--line)] sm:grid-cols-4" data-reveal data-delay="0.3">
             {meta.map(([k, v]) => (
-              <div key={k} className="bg-ink/80 p-3">
-                <dt className="text-mute">{k}</dt>
-                <dd className="mt-1 text-[12px] text-bone">{v}</dd>
+              <div key={k} className="border-b border-r border-[var(--line)] p-3">
+                <dt className="mono text-[10px] text-mute">{k}</dt>
+                <dd className="mt-1 text-[15px] font-medium">{v}</dd>
               </div>
             ))}
           </dl>
-        </div>
+        )}
+      </div>
+      <div className="relative aspect-[4/3] overflow-hidden bg-steel" data-clip>
+        <Image src={img} alt={imgAlt} fill priority sizes="(min-width:1024px) 45vw, 100vw" className="object-cover" />
       </div>
     </section>
   );

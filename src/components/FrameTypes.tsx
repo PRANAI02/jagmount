@@ -13,34 +13,34 @@ export default function FrameTypes() {
   return (
     <div className="grid grid-cols-2 border-l border-t border-[var(--line)] md:grid-cols-4">
       {frames.map((f) => (
-        <div key={f.code} className="group relative border-b border-r border-[var(--line)] p-4 transition-colors duration-500 hover:bg-steel md:p-6">
+        <div key={f.code} className="group relative border-b border-r border-[var(--line)] p-4 transition-colors duration-500 hover:bg-graphite md:p-6">
           <div className="mono flex justify-between text-[10px] text-mute">
             <span>Frame</span>
             <span className="text-orange">{f.code}</span>
           </div>
           <svg viewBox="0 0 200 130" className="mt-2 w-full" data-draw>
-            <line x1="0" y1="110.5" x2="200" y2="110.5" stroke="rgba(236,232,224,.25)" strokeWidth="1" />
+            <line x1="0" y1="110.5" x2="200" y2="110.5" stroke="rgba(23,24,27,.25)" strokeWidth="1" />
             {f.hatch?.map((d) => (
-              <path key={d} d={d} fill="none" stroke="rgba(236,232,224,.4)" strokeWidth="1.2" strokeDasharray="3 3" />
+              <path key={d} d={d} fill="none" stroke="rgba(23,24,27,.4)" strokeWidth="1.2" strokeDasharray="3 3" />
             ))}
             {f.thin?.map((d) => (
-              <path key={d} d={d} fill="none" stroke="#ff6a00" strokeWidth="2.2" />
+              <path key={d} d={d} fill="none" stroke="#ec6411" strokeWidth="2.2" />
             ))}
             {f.paths.map((d) => (
               <path
                 key={d}
                 d={d}
                 fill="none"
-                stroke="#ff6a00"
+                stroke="#ec6411"
                 strokeWidth="4.2"
                 strokeLinejoin="round"
                 className="transition-[stroke-width] duration-500 group-hover:[stroke-width:5.5]"
               />
             ))}
             {/* dimension line */}
-            <line x1="20" y1="122" x2="180" y2="122" stroke="rgba(236,232,224,.45)" strokeWidth="0.8" />
-            <line x1="20" y1="117" x2="20" y2="127" stroke="rgba(236,232,224,.45)" strokeWidth="0.8" />
-            <line x1="180" y1="117" x2="180" y2="127" stroke="rgba(236,232,224,.45)" strokeWidth="0.8" />
+            <line x1="20" y1="122" x2="180" y2="122" stroke="rgba(23,24,27,.4)" strokeWidth="0.8" />
+            <line x1="20" y1="117" x2="20" y2="127" stroke="rgba(23,24,27,.4)" strokeWidth="0.8" />
+            <line x1="180" y1="117" x2="180" y2="127" stroke="rgba(23,24,27,.4)" strokeWidth="0.8" />
           </svg>
           <div className="mt-2 text-[15px] font-semibold md:text-base">{f.name}</div>
         </div>

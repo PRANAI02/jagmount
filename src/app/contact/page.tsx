@@ -1,68 +1,65 @@
 import type { Metadata } from "next";
-import ContactForm from "@/components/ContactForm";
+import Journeys from "@/components/Journeys";
 import PlantCard from "@/components/PlantCard";
-import { company, tel } from "@/lib/content";
+import { company, mailHref, telHref, whatsapp } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Request a quote for a pre-engineered building or structural steel package. Jagmount Projects, Faridabad and Palwal, Haryana.",
+  description: "Contact Jagmount Projects: +91 98712 08401, info@jagmount.com. Get a PEB quote or request fabrication pricing. Faridabad and Palwal, Haryana.",
 };
 
 export default function Contact() {
   return (
     <>
-      <section className="relative overflow-hidden pb-20 pt-36 md:pb-28 md:pt-44">
-        <div className="blueprint absolute inset-0 opacity-60" />
-        <div className="wrap relative">
-          <div className="mono mb-6 flex items-center gap-3 text-[11px] text-orange">
-            <span className="h-2 w-2 bg-orange" />
-            05 · Contact
-          </div>
-          <h1 className="display text-[clamp(36px,11vw,210px)]">
-            <span className="block" data-split="chars">
-              Contact
-            </span>
-            <span className="outline-orange block" data-split="chars" data-delay="0.2">
-              us.
-            </span>
-          </h1>
+      <section className="wrap pb-12 pt-32 md:pt-40">
+        <div className="mono mb-5 flex items-center gap-3 text-[11px] text-orange">
+          <span className="h-2 w-2 bg-orange" />
+          Contact
+        </div>
+        <h1 className="display text-[clamp(32px,4.6vw,60px)]" data-split>
+          Contact us
+        </h1>
+        <p className="mt-5 max-w-2xl text-bone/75 md:text-lg" data-reveal>
+          Choose the enquiry that fits your project, or call, WhatsApp or email us directly.
+        </p>
+      </section>
+
+      <section className="wrap pb-14 md:pb-20">
+        <Journeys compact />
+      </section>
+
+      <section className="wrap grid gap-4 border-t border-[var(--line)] py-14 md:grid-cols-2 md:py-20 lg:grid-cols-4" data-stagger>
+        <div className="bg-graphite p-6">
+          <div className="mono mb-3 text-[10px] text-orange">Call</div>
+          <a href={telHref} className="display text-2xl hover:text-orange">
+            {company.phone}
+          </a>
+        </div>
+        <div className="bg-graphite p-6">
+          <div className="mono mb-3 text-[10px] text-orange">WhatsApp</div>
+          <a href={whatsapp()} target="_blank" rel="noreferrer" className="display text-2xl hover:text-orange">
+            {company.phone}
+          </a>
+        </div>
+        <div className="bg-graphite p-6">
+          <div className="mono mb-3 text-[10px] text-orange">Email</div>
+          <a href={mailHref} className="text-xl font-medium hover:text-orange">
+            {company.email}
+          </a>
+        </div>
+        <div className="bg-graphite p-6">
+          <div className="mono mb-3 text-[10px] text-orange">Head office</div>
+          <address className="not-italic leading-relaxed text-bone/85">{company.headOffice.join(", ")}</address>
         </div>
       </section>
 
-      <section className="wrap grid gap-16 border-t border-[var(--line)] py-20 md:py-28 lg:grid-cols-[1.5fr_1fr]">
-        <div data-reveal>
-          <ContactForm />
+      <section className="wrap grid gap-10 pb-16 md:pb-24 lg:grid-cols-[1fr_1.4fr] lg:items-center">
+        <div>
+          <div className="mono mb-3 text-[10px] text-orange">Manufacturing unit</div>
+          <address className="text-lg not-italic leading-relaxed">{company.plant.join(", ")}</address>
+          <p className="mt-4 max-w-sm text-bone/65">Plant visits for EPC teams and developers can be arranged on call.</p>
         </div>
-
-        <aside className="space-y-px border border-[var(--line)] bg-[var(--line)] self-start" data-stagger>
-          <div className="bg-graphite p-6 md:p-8">
-            <div className="mono mb-4 text-[10px] text-orange">Call the team</div>
-            <ul className="space-y-2">
-              {company.phones.map((p) => (
-                <li key={p}>
-                  <a href={tel(p)} className="display text-2xl transition-colors hover:text-orange md:text-3xl">
-                    {p}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="bg-graphite p-6 md:p-8">
-            <div className="mono mb-4 text-[10px] text-orange">Email</div>
-            <a href={`mailto:${company.email}`} className="text-xl transition-colors hover:text-orange">
-              {company.email}
-            </a>
-          </div>
-          <div className="bg-graphite p-6 md:p-8">
-            <div className="mono mb-4 text-[10px] text-orange">Head office</div>
-            <address className="not-italic leading-relaxed text-bone/85">{company.headOffice.join(", ")}</address>
-          </div>
-          <div className="bg-graphite p-6 md:p-8">
-            <div className="mono mb-4 text-[10px] text-orange">Manufacturing unit</div>
-            <address className="not-italic leading-relaxed text-bone/85">{company.plant.join(", ")}</address>
-          </div>
-          <PlantCard className="aspect-[4/3]" />
-        </aside>
+        <PlantCard className="aspect-[16/9]" />
       </section>
     </>
   );

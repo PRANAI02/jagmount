@@ -66,22 +66,28 @@ export default function ProjectIndex({ limit }: { limit?: number }) {
             data-row
             className="group relative grid grid-cols-[88px_1fr] items-center gap-4 border-b border-[var(--line)] py-5 md:grid-cols-[1.6fr_1fr_1fr_120px] md:py-7"
           >
-            <span className="absolute inset-0 origin-bottom scale-y-0 bg-orange transition-transform duration-500 ease-[cubic-bezier(.2,.7,.2,1)] group-hover:scale-y-100" />
+            <span className="absolute inset-0 origin-bottom scale-y-0 bg-night transition-transform duration-500 ease-[cubic-bezier(.2,.7,.2,1)] group-hover:scale-y-100" />
             <span className="relative aspect-[4/3] w-[88px] overflow-hidden md:hidden">
               <Image src={p.img} alt="" fill sizes="88px" className="object-cover" />
             </span>
             <span className="relative">
-              <span className="display block text-[clamp(22px,3vw,44px)] transition-colors duration-300 group-hover:text-ink">{p.name}</span>
+              <span className="display block text-[clamp(19px,2vw,28px)] transition-colors duration-300 group-hover:text-white">{p.name}</span>
               <span className="mono mt-1 block text-[10px] text-mute md:hidden">
-                {p.place}, {p.state} · {p.sqft.toLocaleString("en-IN")} sq ft
+                {p.place}, {p.state} · {p.sqft ? p.sqft.toLocaleString("en-IN") + " sq ft" : p.tonnage}
               </span>
             </span>
-            <span className="relative hidden text-[15px] text-bone/80 transition-colors group-hover:text-ink md:block">
+            <span className="relative hidden text-[15px] text-bone/80 transition-colors group-hover:text-white md:block">
               {p.place}, {p.state}
             </span>
-            <span className="relative hidden text-[15px] text-bone/60 transition-colors group-hover:text-ink md:block">{p.type}</span>
-            <span className="mono relative hidden text-right text-[13px] transition-colors group-hover:text-ink md:block">
-              {p.sqft.toLocaleString("en-IN")} <span className="text-[10px] text-mute group-hover:text-ink/70">sq ft</span>
+            <span className="relative hidden text-[15px] text-bone/60 transition-colors group-hover:text-white md:block">{p.type}</span>
+            <span className="mono relative hidden text-right text-[13px] transition-colors group-hover:text-white md:block">
+              {p.sqft ? (
+                <>
+                  {p.sqft.toLocaleString("en-IN")} <span className="text-[10px] text-mute group-hover:text-white/80">sq ft</span>
+                </>
+              ) : (
+                p.tonnage
+              )}
             </span>
           </li>
         ))}
@@ -93,7 +99,7 @@ export default function ProjectIndex({ limit }: { limit?: number }) {
         style={{ visibility: "hidden" }}
         aria-hidden
       >
-        <div className="ticks relative h-full w-full overflow-hidden border border-orange bg-steel">
+        <div className="relative h-full w-full overflow-hidden bg-steel shadow-xl">
           {list.map((p, i) => (
             <div key={p.slug} data-i className="absolute inset-0" style={{ clipPath: i === 0 ? "inset(0 0 0 0)" : "inset(100% 0 0 0)" }}>
               <Image src={p.img} alt="" fill sizes="360px" className="object-cover" />

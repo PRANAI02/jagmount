@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import { gsap } from "gsap";
 
-/**
- * First-load sequence: a plasma torch cuts a line across the screen while the
- * capacity counter runs 0000 → 6000 MT, then the plate splits and drops away.
- */
+/** First load only: the logo settles in, a hairline fills, and the sheet lifts away (about one second). */
 export default function Preloader() {
   const root = useRef<HTMLDivElement>(null);
 
@@ -16,76 +14,27 @@ export default function Preloader() {
       window.__jmReady = true;
       window.dispatchEvent(new Event("jm:ready"));
     };
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       el.style.display = "none";
       done();
       return;
     }
-    document.documentElement.style.overflow = "hidden";
-    const num = el.querySelector<HTMLElement>("[data-num]")!;
-    const o = { v: 0 };
-    const tl = gsap.timeline({
-      onComplete: () => {
-        el.style.display = "none";
-      },
-    });
-    tl.set(el.querySelectorAll("[data-row]"), { yPercent: 105 })
-      .to(el.querySelectorAll("[data-row]"), { yPercent: 0, duration: 0.8, ease: "expo.out", stagger: 0.08 })
-      .to(o, { v: 6000, duration: 1.8, ease: "power3.inOut", onUpdate: () => void (num.textContent = String(Math.round(o.v)).padStart(4, "0")) }, 0.2)
-      .fromTo(el.querySelector("[data-cut]"), { scaleX: 0 }, { scaleX: 1, duration: 1.8, ease: "power3.inOut" }, 0.2)
-      .fromTo(el.querySelector("[data-torch]"), { left: "0%" }, { left: "100%", duration: 1.8, ease: "power3.inOut" }, 0.2)
-      .to(el.querySelector("[data-torch]"), { autoAlpha: 0, duration: 0.2 })
-      .to(el.querySelectorAll("[data-row]"), { yPercent: -105, duration: 0.6, ease: "expo.in", stagger: 0.04 }, "+=0.1")
-      .add(() => {
-        document.documentElement.style.overflow = "";
-        done();
-      }, "-=0.1")
-      .to(el.querySelector("[data-top]"), { yPercent: -100, duration: 1.1, ease: "expo.inOut" }, "<-0.05")
-      .to(el.querySelector("[data-bot]"), { yPercent: 100, duration: 1.1, ease: "expo.inOut" }, "<")
-      .to(el.querySelector("[data-cut]"), { autoAlpha: 0, duration: 0.3 }, "<");
+    const tl = gsap.timeline({ onComplete: () => void (el.style.display = "none") });
+    tl.from(el.querySelector("[data-logo]"), { autoAlpha: 0, y: 12, duration: 0.5, ease: "power3.out" })
+      .fromTo(el.querySelector("[data-bar]"), { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power2.inOut" }, 0.1)
+      .add(done, "+=0.05")
+      .to(el, { yPercent: -100, duration: 0.7, ease: "power3.inOut" }, "<");
     return () => {
       tl.kill();
     };
   }, []);
 
   return (
-    <div ref={root} className="fixed inset-0 z-[100] select-none" aria-hidden>
-      <div data-top className="absolute inset-x-0 top-0 h-1/2 bg-graphite blueprint" />
-      <div data-bot className="absolute inset-x-0 bottom-0 h-1/2 bg-graphite blueprint" />
-      <div className="absolute inset-x-0 top-1/2 h-0">
-        <div data-cut className="absolute inset-x-0 -top-px h-[2px] origin-left bg-orange" style={{ boxShadow: "0 0 24px 4px rgba(255,106,0,.65)" }} />
-        <div
-          data-torch
-          className="absolute -top-[30px] h-[60px] w-[60px] -translate-x-1/2 rounded-full"
-          style={{ background: "radial-gradient(circle, #fff 0 8%, #ffb066 18%, rgba(255,106,0,.55) 38%, transparent 70%)" }}
-        />
-      </div>
-      <div className="wrap absolute inset-x-0 bottom-1/2 flex items-end justify-between pb-5">
-        <div className="overflow-hidden">
-          <div data-row className="mono text-[11px] text-mute">
-            Jagwati Metals Engineering LLP
-          </div>
-        </div>
-        <div className="overflow-hidden">
-          <div data-row className="mono text-[11px] text-mute">
-            Palwal · Haryana
-          </div>
-        </div>
-      </div>
-      <div className="wrap absolute inset-x-0 top-1/2 flex items-start justify-between pt-4">
-        <div className="overflow-hidden">
-          <div data-row className="display text-[clamp(56px,13vw,200px)] leading-none text-bone">
-            <span data-num>0000</span>
-            <span className="ml-2 align-top text-[0.3em] text-orange">MT</span>
-          </div>
-        </div>
-        <div className="overflow-hidden pt-2">
-          <div data-row className="mono text-right text-[11px] text-mute">
-            Annual
-            <br />
-            capacity
-          </div>
+    <div ref={root} className="fixed inset-0 z-[100] flex select-none items-center justify-center bg-white" aria-hidden>
+      <div className="flex flex-col items-center gap-5">
+        <Image data-logo src="/img/site/logo-dark.png" alt="" width={1749} height={582} priority className="h-14 w-auto md:h-20" />
+        <div className="h-[2px] w-40 bg-steel">
+          <div data-bar className="h-full w-full origin-left bg-orange" />
         </div>
       </div>
     </div>

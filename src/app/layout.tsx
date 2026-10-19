@@ -2,12 +2,12 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
-import Cursor from "@/components/Cursor";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Preloader from "@/components/Preloader";
 import Transition from "@/components/Transition";
 import QuickDock from "@/components/QuickDock";
+import Analytics from "@/components/Analytics";
 
 const archivo = localFont({
   variable: "--font-archivo",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     template: "%s · Jagmount Projects",
   },
   description:
-    "Jagmount Projects (Jagwati Metals Engineering LLP) designs, fabricates and erects pre-engineered steel buildings, structural steel and industrial infrastructure from its 6000 MT plant in Palwal, Haryana.",
+    "Industrial steel buildings and structural steel fabrication. Jagmount Projects (Jagwati Metals Engineering LLP) designs, fabricates and erects pre-engineered buildings from its 6000 MT plant in Palwal, Haryana, and takes fabrication jobwork to drawings.",
   openGraph: {
     title: "Jagmount Projects · Design to Completion",
     description: "Pre-engineered buildings, structural steel fabrication and industrial infrastructure. 6000 MT annual capacity, Palwal, Haryana.",
@@ -40,10 +40,11 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_IN",
   },
+  verification: process.env.NEXT_PUBLIC_GSC_VERIFICATION ? { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION } : undefined,
 };
 
 export const viewport: Viewport = {
-  themeColor: "#111214",
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -58,8 +59,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Footer />
           </Transition>
           <QuickDock />
-          <Cursor />
-          <div className="grain" aria-hidden />
+          <Analytics />
         </SmoothScroll>
       </body>
     </html>

@@ -1,43 +1,55 @@
 import Link from "next/link";
 import Image from "next/image";
-import { company, nav, tel } from "@/lib/content";
+import { company, journeys, mailHref, nav, telHref, whatsapp } from "@/lib/content";
+import { seoPages } from "@/lib/seo-pages";
 import Button from "./Button";
-import FooterMark from "./FooterMark";
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden border-t border-[var(--line)] bg-graphite">
-      <div className="blueprint pointer-events-none absolute inset-0 opacity-60" />
-
-      <section className="wrap relative pb-20 pt-24 md:pt-36">
-        <div className="mono mb-8 flex items-center gap-3 text-[11px] text-mute">
-          <span className="h-2 w-2 bg-orange" /> Start a project
-        </div>
-        <h2 className="display text-[clamp(44px,10.5vw,190px)]" data-split="chars">
-          Let&apos;s get
-        </h2>
-        <h2 className="display outline-orange text-[clamp(44px,10.5vw,190px)]" data-split="chars" data-delay="0.15">
-          in touch.
-        </h2>
-        <div className="mt-12 flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
-          <p className="max-w-md text-lg text-bone/70" data-reveal>
-            Send us your plot size, span and timeline. Our engineers will come back with a design concept and a budgetary quote.
-          </p>
-          <div className="flex flex-wrap gap-3" data-reveal data-delay="0.1">
-            <Button href="/contact">Get a quote</Button>
-            <Button href={tel(company.phones[0])} variant="ghost">
-              {company.phones[0]}
-            </Button>
+    <footer className="relative border-t border-[var(--line)] bg-graphite">
+      <section className="wrap grid gap-10 py-16 md:py-20 lg:grid-cols-[1.2fr_1fr] lg:items-end">
+        <div>
+          <div className="mono mb-4 flex items-center gap-3 text-[11px] text-mute">
+            <span className="h-2 w-2 bg-orange" /> Start an enquiry
           </div>
+          <h2 className="display text-[clamp(28px,3.6vw,48px)]" data-split>
+            Get in touch with our team.
+          </h2>
+          <p className="mt-4 max-w-lg text-bone/70" data-reveal>
+            Building a factory or warehouse, or need structural steel fabricated to your drawings? Choose the route that fits and our team will get back to you.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-3 lg:justify-end" data-reveal>
+          <Button href={journeys.peb.href}>{journeys.peb.cta}</Button>
+          <Button href={journeys.fab.href} variant="dark">
+            {journeys.fab.cta}
+          </Button>
         </div>
       </section>
 
-      <div className="wrap relative grid gap-10 border-t border-[var(--line)] py-14 sm:grid-cols-2 lg:grid-cols-4">
-        <div>
-          <Image src="/img/site/logo-light.png" alt="Jagmount Projects" width={1749} height={582} className="mb-5 h-12 w-auto" />
+      <div className="wrap grid gap-10 border-t border-[var(--line)] py-12 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="lg:col-span-2">
+          <Image src="/img/site/logo-dark.png" alt="Jagmount Projects" width={1749} height={582} className="mb-5 h-14 w-auto" />
           <p className="max-w-xs text-sm text-mute">
-            {company.legal}. Pre-engineered buildings, structural steel and industrial infrastructure, from design to completion.
+            {company.legal}. Pre-engineered buildings and structural steel fabrication from our plant in Palwal, Haryana.
           </p>
+          <ul className="mt-6 space-y-1.5 text-sm">
+            <li>
+              <a href={telHref} className="font-medium hover:text-orange">
+                {company.phone}
+              </a>
+            </li>
+            <li>
+              <a href={whatsapp()} target="_blank" rel="noreferrer" className="hover:text-orange">
+                WhatsApp us
+              </a>
+            </li>
+            <li>
+              <a href={mailHref} className="hover:text-orange">
+                {company.email}
+              </a>
+            </li>
+          </ul>
         </div>
         <div>
           <div className="mono mb-4 text-[10px] text-orange">Head office</div>
@@ -54,29 +66,24 @@ export default function Footer() {
           </address>
         </div>
         <div>
-          <div className="mono mb-4 text-[10px] text-orange">Contact</div>
-          <ul className="space-y-1 text-sm">
-            {company.phones.map((p) => (
-              <li key={p}>
-                <a href={tel(p)} className="transition-colors hover:text-orange">
-                  {p}
-                </a>
+          <div className="mono mb-4 text-[10px] text-orange">Company</div>
+          <ul className="space-y-1.5 text-sm">
+            {nav.map((n) => (
+              <li key={n.href}>
+                <Link href={n.href} className="transition-colors hover:text-orange">
+                  {n.label}
+                </Link>
               </li>
             ))}
-            <li className="pt-2">
-              <a href={`mailto:${company.email}`} className="transition-colors hover:text-orange">
-                {company.email}
-              </a>
-            </li>
           </ul>
         </div>
         <div>
-          <div className="mono mb-4 text-[10px] text-orange">Index</div>
-          <ul className="space-y-1 text-sm">
-            {nav.map((n) => (
-              <li key={n.href}>
-                <Link href={n.href} className="group inline-flex items-center gap-2 transition-colors hover:text-orange">
-                  {n.label}
+          <div className="mono mb-4 text-[10px] text-orange">Capabilities</div>
+          <ul className="space-y-1.5 text-sm">
+            {seoPages.map((p) => (
+              <li key={p.slug}>
+                <Link href={`/${p.slug}`} className="transition-colors hover:text-orange">
+                  {p.nav}
                 </Link>
               </li>
             ))}
@@ -84,13 +91,11 @@ export default function Footer() {
         </div>
       </div>
 
-      <FooterMark />
-
-      <div className="wrap relative flex flex-col justify-between gap-2 border-t border-[var(--line)] py-6 text-[11px] text-mute sm:flex-row">
+      <div className="wrap flex flex-col justify-between gap-2 border-t border-[var(--line)] py-6 text-[11px] text-mute sm:flex-row">
         <span className="mono">
           © {new Date().getFullYear()} {company.legal}
         </span>
-        <span className="mono">28.14° N · 77.33° E · Palwal, Haryana</span>
+        <span className="mono">Faridabad · Palwal, Haryana</span>
       </div>
     </footer>
   );

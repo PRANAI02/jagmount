@@ -3,7 +3,8 @@ export const company = {
   legal: "Jagwati Metals Engineering LLP",
   tagline: "Design to Completion.",
   email: "info@jagmount.com",
-  phones: ["+91 98712 08401", "+91 95600 68276", "+91 97289 31777"],
+  // the one public number (client brief, Oct 2026)
+  phone: "+91 98712 08401",
   headOffice: ["3rd Floor, SCO No. 8", "Block-B, Sector-11", "Faridabad, Haryana"],
   plant: ["Plot 23/2, Pingore", "Palwal, Haryana", "121105"],
   plantLink: "https://www.google.com/maps/search/?api=1&query=Pingore,+Palwal,+Haryana+121105",
@@ -11,21 +12,55 @@ export const company = {
 };
 
 export const tel = (p: string) => "tel:" + p.replace(/[^+\d]/g, "");
+export const telHref = tel(company.phone);
+export const whatsapp = (text = "Hi Jagmount, I have an enquiry.") =>
+  `https://wa.me/91${company.phone.replace(/\D/g, "").slice(-10)}?text=${encodeURIComponent(text)}`;
+export const mailHref = `mailto:${company.email}`;
+
+/** Single source for every count shown on the site (brochure + completion certificates). */
+export const metrics = {
+  pebYears: "5+",
+  founderYears: "20+",
+  capacity: "6000",
+  delivered: "20+",
+};
 
 export const nav = [
-  { href: "/", label: "Home", n: "00" },
-  { href: "/about", label: "About", n: "01" },
-  { href: "/services", label: "Services", n: "02" },
-  { href: "/manufacturing", label: "Manufacturing", n: "03" },
-  { href: "/projects", label: "Projects", n: "04" },
-  { href: "/contact", label: "Contact", n: "05" },
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/services", label: "Services" },
+  { href: "/manufacturing", label: "Manufacturing" },
+  { href: "/projects", label: "Projects" },
+  { href: "/contact", label: "Contact" },
 ];
 
+/** The two buyer journeys (client brief items 06 to 09). */
+export const journeys = {
+  peb: {
+    href: "/quote/peb",
+    cta: "Get a PEB Quote",
+    title: "PEB & industrial buildings",
+    who: ["Factory owners", "Warehouse owners", "Industrial developers", "Project consultants"],
+    body: "Complete pre-engineered buildings: design, fabrication, supply and erection, with secondary members, cladding and accessories.",
+    points: ["Clear span, multi-span and multi-gable frames", "Roof & wall sheeting, purlins, PUF panels", "Supply and erection to handover"],
+  },
+  fab: {
+    href: "/quote/fabrication",
+    cta: "Request Fabrication Pricing",
+    title: "Structural steel fabrication & jobwork",
+    who: ["PEB manufacturers", "EPC contractors", "Structural steel fabricators", "Industrial engineering companies"],
+    body: "Built-up members fabricated to your drawings at our Palwal plant, on CNC plasma cutting, an automated H-beam line and pull-through welding.",
+    points: ["Built-up beams, columns & rafters", "Crane beams & platforms", "Other structural steel to drawing"],
+  },
+};
+
+export const workTypes = ["Built-up beams", "Columns", "Rafters", "Crane beams", "Platforms", "Other structural steel"];
+
 export const stats = [
-  { value: 20, suffix: "+", label: "Years of founder experience in construction & infrastructure" },
+  { value: 5, suffix: "+", label: "Years in pre-engineered buildings" },
   { value: 6000, suffix: "", unit: "MT", label: "Annual fabrication capacity" },
   { value: 20, suffix: "+", label: "Projects delivered" },
-  { value: 378, suffix: "K", unit: "sq ft", label: "Covered area across eight featured builds" },
+  { value: 20, suffix: "+", label: "Years of founder experience in construction & infrastructure" },
 ];
 
 export const components = [
@@ -77,7 +112,7 @@ export const services = [
     short: "Built-up sections, H-beams and heavy structural steel cut, welded and finished in-house.",
     body: "Our Palwal plant runs CNC plasma cutting, an automated H-beam production line and pull-through welding to produce accurate, consistent structural members for PEB and conventional steel structures.",
     points: ["CNC plasma cutting with Hypertherm Maxpro 200", "Automated H-beam assembly & welding", "Built-up and tapered sections"],
-    img: "/img/site/fab-hall.jpg",
+    img: "/img/site/peb-interior.jpg",
   },
   {
     slug: "secondary",
@@ -86,7 +121,7 @@ export const services = [
     short: "Z & C purlins, roof and wall sheets, deck sheets, PUF panels and bracing.",
     body: "Secondary elements provide support, stability and enclosure to the main structure. We roll-form and supply the components that complete the building system.",
     points: ["Z & C purlins", "Roof, wall & deck sheets", "PUF panels, rod & angle bracing"],
-    img: "/img/site/peb-interior.jpg",
+    img: "/img/gallery/g15.jpg",
   },
   {
     slug: "accessories",
@@ -141,50 +176,38 @@ export const sectors = [
   },
 ];
 
+// Verified against brochure p.15. The brochure also carries hidden "Profile Sheeting" and
+// "Shearing" labels with no photos; those stay off the site until the client confirms them.
 export const machines = [
   {
-    n: "01",
     title: "CNC Plasma Cutting",
     spec: "Hypertherm Maxpro 200",
-    body: "High-speed, precision cutting with excellent edge quality. Accurate fabrication, optimal material utilisation and consistent results for structural steel components.",
-    img: "/img/site/cnc-plasma.jpg",
+    body: "High-speed, precision cutting with excellent edge quality, accurate fabrication, optimal material utilisation and consistent results for structural steel components.",
+    enables: "Flange and web plates, base plates, end plates, stiffeners and gussets cut to CNC profiles.",
+    img: "/img/gallery/g10.jpg",
   },
   {
-    n: "02",
     title: "H-Beam Production Line",
     spec: "Automated assembly & tacking",
-    body: "Precise assembly and welding of structural beams with high efficiency. Maintains dimensional accuracy and delivers superior-quality fabricated sections for PEB projects.",
+    body: "Precise assembly and welding of structural beams with high efficiency and consistency, maintaining dimensional accuracy for PEB projects.",
+    enables: "Built-up I-sections for columns, rafters and beams, including tapered members.",
     img: "/img/site/h-beam-line.jpg",
   },
   {
-    n: "03",
     title: "Pull Through Welding",
-    spec: "PTW for built-up sections",
-    body: "High-speed, continuous welding of built-up sections with exceptional accuracy and strength. Consistent weld quality and reliable performance.",
+    spec: "PTW machine",
+    body: "High-speed, continuous welding of built-up sections with exceptional accuracy and strength, consistent weld quality and reliable performance.",
+    enables: "Continuous flange-to-web welds on long built-up members.",
     img: "/img/site/ptw-machine.jpg",
-  },
-  {
-    n: "04",
-    title: "Profile Sheeting",
-    spec: "Roll-forming line",
-    body: "In-house roll forming of roof and wall profiles, so sheeting is matched to every frame we fabricate.",
-    img: "/img/gallery/g07.jpg",
-  },
-  {
-    n: "05",
-    title: "Shearing",
-    spec: "Plate & sheet shearing",
-    body: "Clean, square cuts on plate and sheet for flanges, webs, gussets and flashings.",
-    img: "/img/gallery/g12.jpg",
   },
 ];
 
 export const process = [
-  { n: "01", title: "Design", body: "Concept, load analysis and optimised design in STAAD Pro to AISC and Indian Standards." },
-  { n: "02", title: "Detailing", body: "Every member, plate and bolt modelled and detailed in Tekla Structures and AutoCAD." },
-  { n: "03", title: "Fabrication", body: "Cut, assembled and welded on our Palwal production lines with in-process quality checks." },
-  { n: "04", title: "Dispatch", body: "Members marked, bundled and sequenced to arrive on site in erection order." },
-  { n: "05", title: "Erection", body: "Our crews bolt up the frame, secondary members, sheeting and accessories to handover." },
+  { n: "01", title: "Design", body: "Concept, load analysis and design in STAAD Pro to AISC and Indian Standards." },
+  { n: "02", title: "Detailing", body: "Members, plates and connections detailed in Tekla Structures and AutoCAD." },
+  { n: "03", title: "Cutting", body: "Plates profiled on the CNC plasma cutter (Hypertherm Maxpro 200)." },
+  { n: "04", title: "Assembly & welding", body: "Sections assembled on the H-beam line and welded on the PTW machine." },
+  { n: "05", title: "Dispatch & erection", body: "Members dispatched to site and erected with structure and sheeting to handover." },
 ];
 
 export type Project = {
@@ -192,23 +215,54 @@ export type Project = {
   name: string;
   place: string;
   state: string;
-  sqft: number;
+  sqft?: number;
   img: string;
   type: string;
+  /** facts from the client's completion certificate, where one exists */
+  scope?: string;
+  tonnage?: string;
+  duration?: string;
+  completed?: string;
+  cert?: string;
+  note?: string;
 };
 
 export const projects: Project[] = [
-  { slug: "inoflex", name: "Inoflex", place: "Indore", state: "Madhya Pradesh", sqft: 95000, img: "/img/projects/inoflex-indore.jpg", type: "Manufacturing plant" },
-  { slug: "amber", name: "Amber Group", place: "Farukhnagar", state: "Uttar Pradesh", sqft: 70000, img: "/img/projects/amber-group.jpg", type: "Industrial facility" },
-  { slug: "ks-industries", name: "KS Industries", place: "Haridwar", state: "Uttarakhand", sqft: 60000, img: "/img/projects/ks-industries.jpg", type: "Factory" },
-  { slug: "rpm-creations", name: "RPM Creations", place: "Ghaziabad", state: "Uttar Pradesh", sqft: 50000, img: "/img/projects/rpm-creations.jpg", type: "Industrial facility" },
-  { slug: "laxmi", name: "Laxmi Engineering", place: "Saharanpur", state: "Uttar Pradesh", sqft: 35000, img: "/img/projects/laxmi-saharanpur.jpg", type: "Workshop" },
-  { slug: "jagwati-metals", name: "Jagwati Metals", place: "Palwal", state: "Haryana", sqft: 31000, img: "/img/projects/jagwati-palwal.jpg", type: "Fabrication plant" },
-  { slug: "ambika", name: "Ambika Engineering Works", place: "Haridwar", state: "Uttarakhand", sqft: 27000, img: "/img/projects/ambika.jpg", type: "Factory" },
+  {
+    slug: "inoflex", name: "Inoflex", place: "Indore", state: "Madhya Pradesh", sqft: 95000, img: "/img/projects/inoflex-indore.jpg", type: "Pre-engineered building",
+    scope: "PEB project designed, fabricated and handed over to approved drawings, specifications and quality standards.",
+    tonnage: "≈1,250 MT", duration: "Within 6 months", completed: "Oct 2025", cert: "/img/certs/inoflex-completion.jpg",
+    note: "Our largest build to date: around 1,250 MT of structural steel for a 95,000 sq ft facility, completed and handed over within six months.",
+  },
+  { slug: "amber", name: "Amber Group", place: "Farukhnagar", state: "Uttar Pradesh", sqft: 70000, img: "/img/projects/amber-group.jpg", type: "Pre-engineered building" },
+  {
+    slug: "ks-industries", name: "KS Industries", place: "Haridwar", state: "Uttarakhand", sqft: 60000, img: "/img/projects/ks-industries.jpg", type: "Pre-engineered building",
+    scope: "Complete supply and erection of the pre-engineered building with structure and sheeting.",
+    tonnage: "450 MT", duration: "May to Sep 2025 (under 4 months)", completed: "Sep 2025", cert: "/img/certs/ks-completion.jpg",
+    note: "450 tonnes supplied and erected with structure and sheeting, from start to handover in under four months.",
+  },
+  { slug: "rpm-creations", name: "RPM Creations", place: "Ghaziabad", state: "Uttar Pradesh", sqft: 50000, img: "/img/projects/rpm-creations.jpg", type: "Pre-engineered building" },
+  { slug: "laxmi", name: "Laxmi Engineering", place: "Saharanpur", state: "Uttar Pradesh", sqft: 35000, img: "/img/projects/laxmi-saharanpur.jpg", type: "Pre-engineered building" },
+  { slug: "jagwati-metals", name: "Jagwati Metals", place: "Palwal", state: "Haryana", sqft: 31000, img: "/img/projects/jagwati-palwal.jpg", type: "Our own fabrication plant" },
+  {
+    slug: "ambika", name: "Ambika Engineering Works", place: "Haridwar", state: "Uttarakhand", sqft: 27000, img: "/img/projects/ambika.jpg", type: "Pre-engineered building",
+    scope: "PEB project completed to the approved drawings, specifications and agreed scope of work.",
+    duration: "3.5 months", completed: "Sep 2025", cert: "/img/certs/aew-completion.jpg",
+    note: "Completed in three and a half months to the approved drawings and agreed scope.",
+  },
+  {
+    slug: "garg", name: "Garg Plywood & Hardware Store", place: "Mathura", state: "Uttar Pradesh", img: "/img/certs/garg-completion.jpg", type: "Pre-engineered building",
+    scope: "Complete supply and erection of the pre-engineered building with structure and sheeting.",
+    tonnage: "175 MT", duration: "May to Aug 2025 (about 3 months)", completed: "Aug 2025", cert: "/img/certs/garg-completion.jpg",
+    note: "175 tonnes supplied and erected with structure and sheeting in about three months.",
+  },
   { slug: "gopal-garden", name: "Gopal Garden", place: "Faridabad", state: "Haryana", sqft: 10000, img: "/img/projects/gopal-garden.jpg", type: "Box column structure" },
 ];
 
-export const clients = [
+/** States with delivered projects: the brochure map plus the states of the featured projects. */
+export const projectStates = ["Uttar Pradesh", "Uttarakhand", "Madhya Pradesh", "Rajasthan", "Himachal Pradesh", "Bihar", "Maharashtra", "Haryana"];
+
+export const clients: { name: string; logo?: string }[] = [
   { name: "KS Industries", logo: "/img/clients/ks-industries.png" },
   { name: "Inoflex", logo: "/img/clients/inoflex.png" },
   { name: "Amardeep Constructions", logo: "/img/clients/amardeep.png" },
@@ -218,6 +272,8 @@ export const clients = [
   { name: "DK", logo: "/img/clients/dk.png" },
   { name: "Garg Plywood & Hardware", logo: "/img/clients/garg.png" },
   { name: "Ambika Engineering Works", logo: "/img/clients/aew.png" },
+  // added Oct 2026 (brief item 05); a featured project that was missing from the client wall. Swap in a logo when supplied.
+  { name: "Laxmi Engineering" },
 ];
 
 export const certificates = [
@@ -290,7 +346,7 @@ export const why = [
 
 export const codes = [
   { title: "AISC", body: "American Institute of Steel Construction" },
-  { title: "IS 800 / IS 875", body: "Indian Standards for steel design & loads" },
+  { title: "Indian Standards", body: "Bureau of Indian Standards codes for steel design" },
   { title: "STAAD Pro", body: "Structural analysis & design" },
   { title: "Tekla Structures", body: "3D modelling & shop detailing" },
   { title: "AutoCAD", body: "Drafting & general arrangement drawings" },
