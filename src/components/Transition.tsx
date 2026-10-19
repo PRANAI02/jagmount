@@ -37,7 +37,7 @@ export default function Transition({ children }: { children: React.ReactNode }) 
       e.stopPropagation();
       if (busy.current) return;
       busy.current = true;
-      window.dispatchEvent(new Event("jm:navstart"));
+      window.dispatchEvent(new CustomEvent("jm:navstart", { detail: { href, label: a.textContent?.trim() ?? "" } }));
       gsap.set(sheet.current, { visibility: "visible", yPercent: 100 });
       gsap.to(sheet.current, {
         yPercent: 0,

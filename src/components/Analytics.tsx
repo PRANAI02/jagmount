@@ -19,10 +19,18 @@ export default function Analytics() {
       if (href.startsWith("tel:")) track("phone_click", { where });
       else if (href.includes("wa.me/")) track("whatsapp_click", { where });
       else if (href.startsWith("mailto:")) track("email_click", { where });
-      else if (href.startsWith("/quote/")) track("cta_click", { where, journey: href.includes("fabrication") ? "fabrication" : "peb", label: a.textContent?.trim() ?? "" });
+    };
+    // internal links are intercepted by the page transition, which announces them instead
+    const onNav = (e: Event) => {
+      const { href = "", label = "" } = (e as CustomEvent<{ href?: string; label?: string }>).detail ?? {};
+      if (href.startsWith("/quote/")) track("cta_click", { where: location.pathname, journey: href.includes("fabrication") ? "fabrication" : "peb", label });
     };
     document.addEventListener("click", onClick, true);
-    return () => document.removeEventListener("click", onClick, true);
+    window.addEventListener("jm:navstart", onNav);
+    return () => {
+      document.removeEventListener("click", onClick, true);
+      window.removeEventListener("jm:navstart", onNav);
+    };
   }, []);
 
   if (!GA) return null;
