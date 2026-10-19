@@ -10,7 +10,15 @@ import { components } from "@/lib/content";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type LState = { op: number; glow: number; lift: number };
+type LState = { op: number; glow: number };
+
+/** One top-level part of a layer, with its own materials so parts can fade one after another. */
+type Unit = {
+  delay: number;
+  solids: { m: THREE.MeshStandardMaterial; color: THREE.Color; opacity: number }[];
+  edges: { m: THREE.LineBasicMaterial; color: THREE.Color; opacity: number; ghostOnly: boolean }[];
+  v: number;
+};
 
 export default function PebBuild() {
   const section = useRef<HTMLElement>(null);
@@ -68,7 +76,55 @@ export default function PebBuild() {
     ground.receiveShadow = true;
     scene.add(ground);
 
-    const { root, groups, mats, pieces, spinners, crane } = buildPEB(lowPower);
+    const { root, groups, pieces, spinners, crane } = buildPEB(lowPower);
+
+    // ---- per-part materials for the ghost / wave effect ---------------------
+    // Every top-level part of a layer gets its own material copies. A part that is not
+    // being explained fades to a faint grey outline (it never disappears), and parts
+    // fade in a wave along the building's length rather than all at once.
+    const ghostEdge = new THREE.Color("#a5a8ae");
+    const units: Record<Layer, Unit[]> = { primary: [], secondary: [], panels: [], accessories: [] };
+    for (const l of LAYERS) {
+      const kids = groups[l].children;
+      // ripple along whichever axis this layer's parts are spread over (frames along the
+      // length, purlins across the span, sheets up the roof)
+      const axes = (["z", "x", "y"] as const).map((ax) => {
+        const vals = kids.map((k) => k.position[ax]);
+        return { ax, vals, distinct: new Set(vals.map((x) => x.toFixed(1))).size };
+      });
+      const { vals } = axes.reduce((a, b) => (b.distinct > a.distinct ? b : a));
+      const vMin = Math.min(...vals);
+      const vMax = Math.max(...vals);
+      for (const [ki, k] of kids.entries()) {
+        const u: Unit = { delay: vMax > vMin ? (vals[ki] - vMin) / (vMax - vMin) : 0, solids: [], edges: [], v: 1 };
+        const meshes: THREE.Mesh[] = [];
+        k.traverse((o) => {
+          if ((o as THREE.Mesh).isMesh) meshes.push(o as THREE.Mesh);
+        });
+        for (const mesh of meshes) {
+          const src = mesh.material as THREE.MeshStandardMaterial;
+          const m = src.clone();
+          mesh.material = m;
+          u.solids.push({ m, color: src.color.clone(), opacity: src.opacity });
+          let hasEdges = false;
+          for (const c of mesh.children) {
+            if ((c as THREE.LineSegments).isLineSegments) {
+              const e = ((c as THREE.LineSegments).material as THREE.LineBasicMaterial).clone();
+              (c as THREE.LineSegments).material = e;
+              u.edges.push({ m: e, color: e.color.clone(), opacity: e.opacity, ghostOnly: false });
+              hasEdges = true;
+            }
+          }
+          // parts drawn without outlines still need one for their ghost state
+          if (!hasEdges) {
+            const e = new THREE.LineBasicMaterial({ color: ghostEdge, transparent: true, opacity: 0 });
+            mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry, 20), e));
+            u.edges.push({ m: e, color: ghostEdge.clone(), opacity: 0, ghostOnly: true });
+          }
+        }
+        units[l].push(u);
+      }
+    }
     scene.add(root);
 
     // ---- sparks ----------------------------------------------------------
@@ -155,10 +211,10 @@ export default function PebBuild() {
 
     // ---- scroll states ----------------------------------------------------
     const L: Record<Layer, LState> = {
-      primary: { op: 1, glow: 0, lift: 0 },
-      secondary: { op: 1, glow: 0, lift: 0 },
-      panels: { op: 1, glow: 0, lift: 0 },
-      accessories: { op: 1, glow: 0, lift: 0 },
+      primary: { op: 1, glow: 0 },
+      secondary: { op: 1, glow: 0 },
+      panels: { op: 1, glow: 0 },
+      accessories: { op: 1, glow: 0 },
     };
     const cam = { ang: 0.72, rad: lowPower ? 125 : 112, y: 30, look: 5, orbit: 0 };
     const stepEls = Array.from(sec.querySelectorAll<HTMLElement>("[data-step]"));
@@ -168,17 +224,8 @@ export default function PebBuild() {
     const focus = (name: Layer | "all", at: number) => {
       for (const l of LAYERS) {
         const on = name === "all" || name === l;
-        const idx = LAYERS.indexOf(l);
-        const fi = name === "all" ? 99 : LAYERS.indexOf(name);
-        scrollTl.to(
-          L[l],
-          {
-            op: on ? 1 : idx < fi ? 0.22 : 0.0,
-            glow: on && name !== "all" ? 1 : 0,
-            lift: !on && idx > fi ? 9 : 0,
-          },
-          at,
-        );
+        // layers not being explained drop to their ghost outline (op 0); nothing is removed
+        scrollTl.to(L[l], { op: on ? 1 : 0, glow: on && name !== "all" ? 1 : 0, duration: 1.1 }, at);
       }
     };
     scrollTl.to(sec.querySelector("[data-intro]"), { autoAlpha: 0, y: -40, duration: 0.5 }, 0.1);
@@ -217,6 +264,7 @@ export default function PebBuild() {
 
     // ---- per-frame ---------------------------------------------------------
     const orange = new THREE.Color("#ff6a00");
+    const glowEdge = new THREE.Color("#ff8a3d");
     const tmp = new THREE.Color();
     const mouse = { x: 0, y: 0, sx: 0, sy: 0 };
     const onMove = (e: PointerEvent) => {
@@ -225,25 +273,37 @@ export default function PebBuild() {
     };
     window.addEventListener("pointermove", onMove);
 
+    const smooth = (x: number) => x * x * (3 - 2 * x);
+    const WAVE = 0.55; // how much of the fade is spread along the building
+    const last: Record<Layer, string> = { primary: "", secondary: "", panels: "", accessories: "" };
     const applyLayers = () => {
       for (const l of LAYERS) {
         const s = L[l];
-        const m = mats[l];
-        m.solids.forEach((mat, i) => {
-          const base = m.base[i];
-          mat.opacity = base.opacity * s.op;
-          mat.transparent = mat.opacity < 0.999;
-          mat.depthWrite = mat.opacity > 0.5;
-          mat.visible = mat.opacity > 0.01;
-          tmp.copy(base.color).lerp(orange, s.glow * (l === "panels" ? 0.25 : 0.55));
-          mat.color.copy(tmp);
-        });
-        m.edges.forEach((e) => {
-          e.opacity = Math.min(1, (0.35 + s.glow * 0.65) * Math.max(s.op, s.glow));
-          e.color.set(s.glow > 0.05 ? "#ff8a3d" : l === "panels" || l === "accessories" ? "#1b1d21" : "#8e939d");
-          e.visible = s.op > 0.01;
-        });
-        groups[l].position.y = s.lift;
+        const key = s.op.toFixed(3) + s.glow.toFixed(3);
+        if (key === last[l]) continue;
+        last[l] = key;
+        const tint = s.glow * (l === "panels" ? 0.25 : 0.55);
+        for (const u of units[l]) {
+          // each part has its own window inside the layer's 0..1 fade, ordered along the length
+          const v = smooth(Math.min(1, Math.max(0, (s.op - u.delay * WAVE) / (1 - WAVE))));
+          u.v = v;
+          for (const x of u.solids) {
+            x.m.opacity = x.opacity * v;
+            x.m.transparent = x.m.opacity < 0.999;
+            x.m.depthWrite = x.m.opacity > 0.5;
+            x.m.visible = x.m.opacity > 0.01;
+            tmp.copy(x.color).lerp(orange, tint);
+            x.m.color.copy(tmp);
+          }
+          for (const e of u.edges) {
+            // solid state: the part's own outline (orange when highlighted); ghost state: thin grey line
+            const solidOpacity = e.ghostOnly ? 0 : Math.min(1, e.opacity + s.glow * 0.5);
+            e.m.opacity = 0.32 * (1 - v) + solidOpacity * v;
+            tmp.copy(ghostEdge).lerp(s.glow > 0.05 ? glowEdge : e.color, v);
+            e.m.color.copy(tmp);
+            e.m.visible = e.m.opacity > 0.01;
+          }
+        }
       }
     };
 
