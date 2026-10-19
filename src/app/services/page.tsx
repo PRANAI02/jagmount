@@ -6,6 +6,7 @@ import SectionHead from "@/components/SectionHead";
 import FrameTypes from "@/components/FrameTypes";
 import Button from "@/components/Button";
 import ProcessLine from "@/components/ProcessLine";
+import { seoPages } from "@/lib/seo-pages";
 import { accessories, accessoryList, advantages, components, journeys, machines, sectors, secondary, services, workTypes, type Spec } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -39,6 +40,21 @@ const workBodies: Record<string, string> = {
   Platforms: "Platforms, walkways and mezzanine steel.",
   "Other structural steel": "Plates, gussets, base plates and members fabricated to drawing.",
 };
+
+function Related({ journey }: { journey: "peb" | "fab" }) {
+  return (
+    <div className="mt-6 flex flex-wrap items-center gap-2 text-[14px]">
+      <span className="text-mute">Related:</span>
+      {seoPages
+        .filter((p) => p.journey === journey)
+        .map((p) => (
+          <Link key={p.slug} href={`/${p.slug}`} className="border border-[var(--line-strong)] px-3 py-1.5 hover:border-orange hover:text-orange">
+            {p.nav}
+          </Link>
+        ))}
+    </div>
+  );
+}
 
 export default function Services() {
   const green = services.find((s) => s.slug === "green")!;
@@ -204,6 +220,7 @@ export default function Services() {
           <p className="text-lg font-medium">Planning a factory, warehouse or industrial building?</p>
           <Button href={journeys.peb.href}>{journeys.peb.cta}</Button>
         </div>
+        <Related journey="peb" />
       </section>
 
       {/* ============ PART 2: FABRICATION ============ */}
@@ -262,6 +279,7 @@ export default function Services() {
           <p className="text-lg font-medium">Have drawings ready?</p>
           <Button href={journeys.fab.href}>Send Your Drawings for a Fabrication Quote</Button>
         </div>
+        <Related journey="fab" />
       </section>
     </>
   );

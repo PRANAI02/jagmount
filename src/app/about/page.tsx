@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     "Jagmount Projects is the PEB arm of Jagwati Metals Engineering LLP: 5+ years in pre-engineered buildings, founders with 20+ years in construction, and a 6000 MT plant in Palwal, Haryana.",
 };
 
-// Drop portraits into public/img/founders/ and set `photo` to show them; until then a monogram is shown.
+// Drop portraits into public/img/founders/ and set `photo`; without one, the name is shown on its own (no placeholder).
 const founders: { name: string; photo?: string }[] = company.founders.map((name) => ({ name }));
 
 const facts: [string, string][] = [
@@ -82,28 +82,19 @@ export default function About() {
       {/* founders */}
       <section className="bg-graphite py-14 md:py-20">
         <div className="wrap grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:items-center">
-          <div className="grid grid-cols-2 gap-4" data-stagger>
+          <div className={`grid gap-6 ${founders.some((f) => f.photo) ? "grid-cols-2" : "content-center sm:grid-cols-2"}`} data-stagger>
             {founders.map((f) => (
               <figure key={f.name}>
-                <div className="relative aspect-[4/5] overflow-hidden bg-steel">
-                  {f.photo ? (
+                {f.photo ? (
+                  <div className="relative mb-3 aspect-[4/5] overflow-hidden bg-steel">
                     <Image src={f.photo} alt={f.name} fill sizes="(min-width:1024px) 20vw, 50vw" className="object-cover" />
-                  ) : (
-                    <div className="flex h-full items-center justify-center">
-                      <span className="display text-[clamp(40px,5vw,72px)] text-bone/25">
-                        {f.name
-                          .replace("Mr. ", "")
-                          .split(" ")
-                          .map((w) => w[0])
-                          .join("")
-                          .slice(0, 2)}
-                      </span>
-                    </div>
-                  )}
-                </div>
-                <figcaption className="mt-3">
-                  <div className="font-semibold">{f.name}</div>
-                  <div className="text-[13px] text-mute">Founder</div>
+                  </div>
+                ) : (
+                  <span className="mb-4 block h-1.5 w-10 bg-orange" />
+                )}
+                <figcaption>
+                  <div className="text-xl font-semibold">{f.name}</div>
+                  <div className="text-[14px] text-mute">Founder · {company.legal}</div>
                 </figcaption>
               </figure>
             ))}

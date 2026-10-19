@@ -3,12 +3,14 @@
 import Script from "next/script";
 import { useEffect } from "react";
 import { track } from "@/lib/track";
+import { rememberSource } from "@/lib/source";
 
 const GA = process.env.NEXT_PUBLIC_GA_ID;
 
 /** Loads GA4 (when NEXT_PUBLIC_GA_ID is set) and reports contact-link and CTA clicks site-wide. */
 export default function Analytics() {
   useEffect(() => {
+    rememberSource();
     const onClick = (e: MouseEvent) => {
       const a = (e.target as HTMLElement).closest<HTMLAnchorElement>("a");
       if (!a) return;

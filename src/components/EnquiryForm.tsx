@@ -2,19 +2,26 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import { upload } from "@vercel/blob/client";
 import { company, mailHref, projects, telHref, whatsapp, workTypes } from "@/lib/content";
 import { track } from "@/lib/track";
+import { leadSource } from "@/lib/source";
 
 export type FormKind = "peb" | "fabrication";
 
-const MAX_BYTES = 4 * 1024 * 1024; // Vercel functions accept ~4.5 MB per request
+const MAX_FILE = 100 * 1024 * 1024; // per file; files go straight to private Blob storage
+const MAX_FILES = 10;
 const ACCEPT = ".pdf,.dwg,.dxf,.jpg,.jpeg,.png,.xls,.xlsx,.zip";
 
 const projectTypes = ["Factory / manufacturing plant", "Warehouse / logistics", "Industrial shed", "Commercial building", "Other"];
 const timelines = ["Within 1 month", "1 to 3 months", "3 to 6 months", "6+ months / planning stage"];
 const drawingStates = ["Fabrication / shop drawings ready", "GA / design drawings only", "No drawings yet"];
 
-type Status = { kind: "idle" } | { kind: "sending" } | { kind: "sent"; ref: string; confirmed: boolean } | { kind: "fallback"; summary: string };
+type Status =
+  | { kind: "idle" }
+  | { kind: "sending"; note: string }
+  | { kind: "sent"; ref: string; confirmed: boolean; notified: boolean; summary: string }
+  | { kind: "fallback"; summary: string };
 
 /**
  * One component, two distinct forms: "Tell Us About Your Project" (PEB) and
@@ -47,9 +54,8 @@ export default function EnquiryForm({ kind }: { kind: FormKind }) {
 
   const pickFiles = (list: FileList | null) => {
     const next = [...files, ...Array.from(list ?? [])];
-    const total = next.reduce((a, f) => a + f.size, 0);
-    if (total > MAX_BYTES) {
-      setFileError("Attachments are limited to 4 MB in total. For larger drawings, paste a Google Drive, WeTransfer or Dropbox link below, or email them to us.");
+    if (next.some((f) => f.size > MAX_FILE) || next.length > MAX_FILES) {
+      setFileError("Up to 10 files of 100 MB each. For anything larger, paste a Google Drive, WeTransfer or Dropbox link below, or email it to us.");
       return;
     }
     setFileError("");
@@ -61,18 +67,28 @@ export default function EnquiryForm({ kind }: { kind: FormKind }) {
     const fd = new FormData(e.currentTarget);
     fd.set("form", kind);
     fd.delete("files");
-    files.forEach((f) => fd.append("files", f));
     if (kind === "fabrication") fd.set("workType", works.join(", ") || "Not specified");
     if (ref) fd.set("reference", ref);
-    setStatus({ kind: "sending" });
+    fd.set("source", leadSource());
     const hasDrawings = files.length > 0 || !!String(fd.get("fileLink") || "").trim();
     try {
+      // drawings go browser -> private storage directly, then the enquiry carries their paths
+      const uploaded: { name: string; pathname: string; size: number }[] = [];
+      const batch = Date.now().toString(36);
+      for (const [i, f] of files.entries()) {
+        setStatus({ kind: "sending", note: `Uploading ${i + 1} of ${files.length}…` });
+        const safe = f.name.replace(/[^\w.\-]+/g, "_").slice(-120);
+        const b = await upload(`enquiries/${batch}/${safe}`, f, { access: "private", handleUploadUrl: "/api/enquiry/upload", multipart: f.size > 8 * 1024 * 1024 });
+        uploaded.push({ name: f.name, pathname: b.pathname, size: f.size });
+      }
+      fd.set("uploads", JSON.stringify(uploaded));
+      setStatus({ kind: "sending", note: "Sending…" });
       const res = await fetch("/api/enquiry", { method: "POST", body: fd });
-      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; ref?: string; confirmationSent?: boolean };
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; ref?: string; confirmationSent?: boolean; notified?: boolean };
       if (res.ok && data.ok) {
         track("generate_lead", { form: kind, has_drawings: hasDrawings });
         if (hasDrawings) track("drawing_upload", { form: kind, files: files.length });
-        setStatus({ kind: "sent", ref: data.ref ?? "", confirmed: !!data.confirmationSent });
+        setStatus({ kind: "sent", ref: data.ref ?? "", confirmed: !!data.confirmationSent, notified: !!data.notified, summary: summarise(fd, kind, files) });
         return;
       }
     } catch {
@@ -92,6 +108,19 @@ export default function EnquiryForm({ kind }: { kind: FormKind }) {
             : "Our estimating team will review your drawings and come back with pricing or questions, usually within one working day."}
           {status.confirmed ? " A confirmation has been sent to your email." : ""}
         </p>
+        {!status.notified && (
+          <div className="mt-5 bg-graphite p-4">
+            <p className="text-[15px]">For the fastest reply, also send your enquiry to our team on WhatsApp. Your details are already filled in.</p>
+            <a
+              href={whatsapp(`Enquiry ${status.ref}\n${status.summary}`)}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-block bg-[#25d366] px-5 py-3 font-medium text-white"
+            >
+              Send on WhatsApp
+            </a>
+          </div>
+        )}
         <p className="mt-4 text-bone/75">
           Need to add something? Call{" "}
           <a href={telHref} className="font-medium text-orange underline">
@@ -261,7 +290,7 @@ export default function EnquiryForm({ kind }: { kind: FormKind }) {
           <L>{kind === "peb" ? "Drawings or documents" : "Drawings / specifications"}</L>
           <label className="flex cursor-pointer flex-col items-center justify-center gap-1 border border-dashed border-[var(--line-strong)] bg-graphite px-4 py-6 text-center transition-colors hover:border-orange">
             <span className="text-[15px] font-medium">Choose files to upload</span>
-            <span className="text-[13px] text-mute">PDF, DWG, DXF, images, Excel or ZIP · up to 4 MB in total</span>
+            <span className="text-[13px] text-mute">PDF, DWG, DXF, images, Excel or ZIP · up to 10 files, 100 MB each</span>
             <input type="file" name="files" multiple accept={ACCEPT} className="sr-only" onChange={(e) => pickFiles(e.target.files)} />
           </label>
           {files.length > 0 && (
@@ -309,7 +338,7 @@ export default function EnquiryForm({ kind }: { kind: FormKind }) {
             disabled={status.kind === "sending"}
             className="flex items-center justify-center gap-3 bg-orange px-7 py-4 font-medium text-white transition-colors hover:bg-night disabled:opacity-60"
           >
-            {status.kind === "sending" ? "Sending…" : kind === "peb" ? "Send project enquiry" : "Send for a fabrication quote"}
+            {status.kind === "sending" ? status.note : kind === "peb" ? "Send project enquiry" : "Send for a fabrication quote"}
           </button>
         </div>
       </form>
@@ -355,7 +384,7 @@ function summarise(fd: FormData, kind: FormKind, files: File[]) {
         ];
   if (fd.get("reference")) lines.push(`Similar to: ${g("reference")}`);
   if (fd.get("fileLink")) lines.push(`Files: ${g("fileLink")}`);
-  if (files.length) lines.push(`Attachments: ${files.map((f) => f.name).join(", ")} (attaching to this email)`);
+  if (files.length) lines.push(`Drawings: ${files.map((f) => f.name).join(", ")}`);
   if (fd.get("message")) lines.push("", g("message"));
   return lines.join("\n");
 }

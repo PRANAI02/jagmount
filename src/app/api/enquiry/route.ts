@@ -1,18 +1,20 @@
+import { saveLead, storeReady, type Lead } from "@/lib/leads";
+
 /**
  * Enquiry endpoint for the two website forms.
  *
- * Environment (set in Vercel → Project → Settings → Environment Variables):
- *   RESEND_API_KEY        Resend API key (https://resend.com). Required to email enquiries.
- *   ENQUIRY_FROM          Sender, on a domain verified in Resend, e.g. "Jagmount Website <enquiries@jagmount.com>"
- *   ENQUIRY_TO            Sales inbox for PEB enquiries (default info@jagmount.com)
- *   FABRICATION_TO        Estimating inbox for fabrication enquiries (defaults to ENQUIRY_TO)
- *   LEADS_WEBHOOK_URL     Optional: every lead is POSTed here as JSON (Google Sheets Apps Script, Zapier, a CRM)
+ * Every enquiry is saved to the private Blob store and appears in the lead tracker at /leads.
+ * Drawings are uploaded by the browser straight into the same private store (see ./upload).
  *
- * With neither RESEND_API_KEY nor LEADS_WEBHOOK_URL set the route answers 503 and the
- * form offers the visitor a pre-filled email / WhatsApp instead, so nothing is lost.
+ * Environment (Vercel → Project → Settings → Environment Variables):
+ *   BLOB_READ_WRITE_TOKEN  set by the linked "jagmount-leads" Blob store (lead + drawing storage)
+ *   LEADS_PASSWORD         password for /leads; LEADS_SECRET signs its cookie
+ *   RESEND_API_KEY         Resend API key. Needed to email enquiries to sales and confirm to the buyer.
+ *   ENQUIRY_FROM           Sender on a domain verified in Resend, e.g. "Jagmount Website <enquiries@jagmount.com>"
+ *   ENQUIRY_TO             Sales inbox for PEB enquiries (default info@jagmount.com)
+ *   FABRICATION_TO         Estimating inbox for fabrication enquiries (defaults to ENQUIRY_TO)
+ *   LEADS_WEBHOOK_URL      Optional: each lead is also POSTed here as JSON (Google Sheet, Zapier, a CRM)
  */
-
-const MAX_BYTES = 4 * 1024 * 1024;
 
 const FIELDS: Record<string, [string, string][]> = {
   peb: [
@@ -65,32 +67,61 @@ export async function POST(request: Request) {
   const missing = REQUIRED[form].filter((k) => !v(k));
   if (missing.length) return Response.json({ ok: false, reason: "missing", fields: missing }, { status: 422 });
 
-  const files = fd.getAll("files").filter((f): f is File => typeof f === "object" && f !== null && "arrayBuffer" in f && f.size > 0);
-  if (files.reduce((a, f) => a + f.size, 0) > MAX_BYTES) return Response.json({ ok: false, reason: "too_large" }, { status: 413 });
+  let files: Lead["files"] = [];
+  try {
+    files = (JSON.parse(v("uploads") || "[]") as Lead["files"])
+      .filter((f) => typeof f.pathname === "string" && f.pathname.startsWith("enquiries/"))
+      .slice(0, 20)
+      .map((f) => ({ name: String(f.name).slice(0, 200), pathname: f.pathname, size: Number(f.size) || 0 }));
+  } catch {
+    /* ignore malformed upload list */
+  }
 
   const now = new Date();
   const ref = `JM-${form === "peb" ? "P" : "F"}${now.toISOString().slice(2, 10).replace(/-/g, "")}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+  const fields = Object.fromEntries(FIELDS[form].map(([k]) => [k, v(k)]).filter(([, val]) => val));
   const rows = FIELDS[form].map(([k, label]) => [label, v(k)] as const).filter(([, val]) => val);
   const title = form === "peb" ? "PEB project enquiry" : "Fabrication quote request";
   const who = v("company") || v("name");
+  const origin = new URL(request.url).origin;
 
   const key = process.env.RESEND_API_KEY;
   const hook = process.env.LEADS_WEBHOOK_URL;
-  if (!key && !hook) return Response.json({ ok: false, reason: "not_configured" }, { status: 503 });
+  if (!key && !hook && !storeReady()) return Response.json({ ok: false, reason: "not_configured" }, { status: 503 });
 
-  let delivered = false;
+  let stored = false;
+  let notified = false;
   let confirmationSent = false;
+
+  const lead: Lead = {
+    ref,
+    date: now.toISOString(),
+    form: form as Lead["form"],
+    source: v("source") || "unknown",
+    fields,
+    files,
+    notified: false,
+    status: "New",
+    value: "",
+    owner: "",
+    followUp: "",
+    quote: "Not started",
+    outcome: "Open",
+    notes: "",
+  };
 
   if (key) {
     const from = process.env.ENQUIRY_FROM || "Jagmount Website <onboarding@resend.dev>";
     const salesTo = process.env.ENQUIRY_TO || "info@jagmount.com";
     const to = form === "fabrication" ? process.env.FABRICATION_TO || salesTo : salesTo;
-    const attachments = await Promise.all(
-      files.map(async (f) => ({ filename: f.name, content: Buffer.from(await f.arrayBuffer()).toString("base64") })),
-    );
     const table = rows
       .map(([l, val]) => `<tr><td style="padding:6px 12px 6px 0;color:#63666d;vertical-align:top">${esc(l)}</td><td style="padding:6px 0">${esc(val).replace(/\n/g, "<br>")}</td></tr>`)
       .join("");
+    const fileList = files.length
+      ? `<p style="font-family:Arial"><b>Drawings (${files.length})</b>, open via the lead tracker login:</p><ul style="font-family:Arial">${files
+          .map((f) => `<li><a href="${origin}/api/leads/file?p=${encodeURIComponent(f.pathname)}">${esc(f.name)}</a></li>`)
+          .join("")}</ul>`
+      : "";
     const send = (body: object) =>
       fetch("https://api.resend.com/emails", {
         method: "POST",
@@ -103,13 +134,12 @@ export async function POST(request: Request) {
       to: [to],
       reply_to: v("email") || undefined,
       subject: `[${ref}] ${title}: ${who}`,
-      html: `<h2 style="font-family:Arial">${title}</h2><p style="font-family:Arial;color:#63666d">Ref ${ref} · ${now.toUTCString()}</p><table style="font-family:Arial;font-size:14px">${table}</table>${files.length ? `<p style="font-family:Arial">${files.length} file(s) attached.</p>` : ""}`,
-      attachments: attachments.length ? attachments : undefined,
+      html: `<h2 style="font-family:Arial">${title}</h2><p style="font-family:Arial;color:#63666d">Ref ${ref} · ${now.toUTCString()} · Source: ${esc(lead.source)}</p><table style="font-family:Arial;font-size:14px">${table}</table>${fileList}<p style="font-family:Arial"><a href="${origin}/leads">Open the lead tracker</a></p>`,
     });
-    delivered = sales.ok;
+    notified = sales.ok;
     if (!sales.ok) console.error("enquiry: sales email failed", sales.status, await sales.text());
 
-    if (delivered && v("email")) {
+    if (notified && v("email")) {
       const conf = await send({
         from,
         to: [v("email")],
@@ -121,27 +151,29 @@ export async function POST(request: Request) {
     }
   }
 
+  if (storeReady()) {
+    try {
+      lead.notified = notified;
+      await saveLead(lead);
+      stored = true;
+    } catch (e) {
+      console.error("enquiry: lead store failed", e);
+    }
+  }
+
   if (hook) {
     try {
       const r = await fetch(hook, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ref,
-          date: now.toISOString(),
-          source: request.headers.get("referer") || "",
-          form,
-          ...Object.fromEntries(FIELDS[form].map(([k]) => [k, v(k)])),
-          attachments: files.map((f) => f.name).join(", "),
-          status: "New",
-        }),
+        body: JSON.stringify({ ref, date: lead.date, source: lead.source, form, ...fields, attachments: files.map((f) => f.name).join(", "), status: "New" }),
       });
-      delivered = delivered || r.ok;
+      stored = stored || r.ok;
     } catch (e) {
       console.error("enquiry: webhook failed", e);
     }
   }
 
-  if (!delivered) return Response.json({ ok: false, reason: "delivery_failed" }, { status: 502 });
-  return Response.json({ ok: true, ref, confirmationSent });
+  if (!stored && !notified) return Response.json({ ok: false, reason: "delivery_failed" }, { status: 502 });
+  return Response.json({ ok: true, ref, notified, confirmationSent });
 }

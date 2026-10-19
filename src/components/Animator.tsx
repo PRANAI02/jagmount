@@ -62,12 +62,14 @@ export default function Animator() {
           });
         });
 
+        // clearProps: once settled, drop the transform so Safari re-rasterises at full resolution
         q("[data-reveal]").forEach((el) => {
           gsap.from(el, {
             y: 24,
             autoAlpha: 0,
             duration: 0.8,
             ease: EASE,
+            clearProps: "transform",
             delay: Number(el.dataset.delay || 0),
             scrollTrigger: { trigger: el, start: "top 92%", once: true },
           });
@@ -80,6 +82,7 @@ export default function Animator() {
             duration: 0.7,
             ease: EASE,
             stagger: Number(el.dataset.stagger || 0.06),
+            clearProps: "transform",
             scrollTrigger: { trigger: el, start: "top 90%", once: true },
           });
         });
@@ -87,8 +90,8 @@ export default function Animator() {
         q("[data-clip]").forEach((el) => {
           const media = el.querySelector("img, video, [data-clip-media]");
           const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: "top 90%", once: true } });
-          tl.from(el, { autoAlpha: 0, y: 20, duration: 0.9, ease: EASE });
-          if (media) tl.from(media, { scale: 1.08, duration: 1.4, ease: "power2.out" }, 0);
+          tl.from(el, { autoAlpha: 0, y: 20, duration: 0.9, ease: EASE, clearProps: "transform" });
+          if (media) tl.from(media, { scale: 1.08, duration: 1.4, ease: "power2.out", clearProps: "transform" }, 0);
         });
 
         q("[data-parallax]").forEach((el) => {

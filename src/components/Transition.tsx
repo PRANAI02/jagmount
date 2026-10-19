@@ -24,7 +24,7 @@ export default function Transition({ children }: { children: React.ReactNode }) 
       const a = (e.target as HTMLElement).closest("a");
       if (!a || a.target === "_blank" || a.hasAttribute("download")) return;
       const href = a.getAttribute("href");
-      if (!href || !href.startsWith("/") || href.startsWith("//")) return;
+      if (!href || !href.startsWith("/") || href.startsWith("//") || href.startsWith("/api/")) return;
       const url = new URL(href, location.href);
       if (url.pathname === location.pathname) {
         if (url.hash || url.search !== location.search) return;
