@@ -16,6 +16,15 @@ Sources: company brochure PDF + the clients' completion certificates (scope, ton
 - 3D PEB model moved below the fold as "Components of a PEB" (starts building when scrolled to).
 - SEO pages at `/peb-manufacturer-faridabad`, `/peb-manufacturer-palwal`, `/structural-steel-fabrication-faridabad`, `/built-up-beam-manufacturer`, `/structural-steel-fabrication-jobwork`, `/industrial-shed-warehouse-construction`, `/heavy-steel-structure-fabrication`; sitemap.xml + robots.txt.
 
+## Lead tracker (Oct 19 2026)
+- `/leads` (noindex, password = env `LEADS_PASSWORD`, cookie signed with `LEADS_SECRET`). Every enquiry is saved to the private Vercel Blob store `jagmount-leads` (bom1) as `leads/<ref>.json`; drawings upload browser→Blob under `enquiries/` (private, 100 MB/file) via `/api/enquiry/upload`, downloaded only through `/api/leads/file` when logged in.
+- Tracker fields: status, est. value, follow-up owner/date, quotation, outcome, notes; CSV export. First-touch lead source (UTM/referrer/landing) stored in localStorage `jm_src`.
+- Delete test blobs with `vercel blob del <path> --rw-token "$BLOB_READ_WRITE_TOKEN"` (plain `vercel blob` trips over OIDC vars in .env.local).
+- Client status PDF: ~/Downloads/Jagmount website revision - status 19 Oct 2026.pdf
+
+## Images
+All brochure JPGs were upscaled ~2x (Lanczos + light unsharp) and next/image serves q90 (`images.qualities: [90]`) so retina/Safari gets 1080 to 1600 px files. Replace with originals when the client sends them.
+
 ## Needs external setup (env vars in Vercel → jagmount → Settings → Environment Variables)
 | Variable | What | Without it |
 |---|---|---|
@@ -26,7 +35,7 @@ Sources: company brochure PDF + the clients' completion certificates (scope, ton
 | `NEXT_PUBLIC_GA_ID` | GA4 measurement ID (G-XXXX) | No analytics |
 | `NEXT_PUBLIC_GSC_VERIFICATION` | Search Console HTML-tag token | Verify via DNS instead |
 GA4 events: `generate_lead` (form accepted by server, param `form`=peb/fabrication), `drawing_upload`, `phone_click`, `whatsapp_click`, `email_click`, `cta_click`. Mark `generate_lead` as a key event in GA4.
-Uploads are capped at 4 MB per enquiry (Vercel request limit); larger files go via link/email/WhatsApp.
+Without RESEND the enquiry is still stored in the tracker and the buyer is nudged to also send it on WhatsApp.
 
 ## Confirm with the client
 - Founder photos (slots ready on About; set `photo` in `src/app/about/page.tsx`, files in `public/img/founders/`).
