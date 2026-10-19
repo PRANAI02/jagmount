@@ -8,7 +8,7 @@ import SectionHead from "@/components/SectionHead";
 import Button from "@/components/Button";
 import Journeys from "@/components/Journeys";
 import ClientWall from "@/components/ClientWall";
-import { journeys, machines, metrics, projects, projectStates, stats, why } from "@/lib/content";
+import { journeys, machines, metrics, projects, projectStatesText, stats, why } from "@/lib/content";
 
 export default function Home() {
   return (
@@ -167,20 +167,8 @@ export default function Home() {
             <SectionHead
               label="Our presence"
               title="Our presence"
-              intro={`Our manufacturing unit is in Palwal, Haryana, on the Delhi to Mumbai industrial corridor, with projects delivered across ${projectStates.slice(0, -1).join(", ")} and Haryana.`}
+              intro={`Our manufacturing unit is in Palwal, Haryana, on the Delhi to Mumbai industrial corridor, with projects delivered across ${projectStatesText}.`}
             />
-            <ul className="mono mt-8 grid grid-cols-2 gap-3 text-[11px]" data-stagger>
-              <li className="flex items-center gap-3">
-                <span className="h-3 w-3 bg-orange" /> Manufacturing unit
-              </li>
-              <li className="flex items-center gap-3">
-                <span
-                  className="h-3 w-3 border border-orange"
-                  style={{ background: "repeating-linear-gradient(45deg,rgba(236,100,17,.5) 0 2px,transparent 2px 5px)" }}
-                />
-                Projects delivered
-              </li>
-            </ul>
           </div>
           <div className="mx-auto w-full max-w-[520px]">
             <IndiaMap className="h-auto w-full" />

@@ -6,7 +6,7 @@ import IndiaMap from "@/components/IndiaMap";
 import Lightbox from "@/components/Lightbox";
 import ClientWall from "@/components/ClientWall";
 import Button from "@/components/Button";
-import { certificates, clients, gallery, journeys, metrics, projects, projectStates } from "@/lib/content";
+import { certificates, clients, gallery, journeys, metrics, projects, projectStatesText } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -47,7 +47,7 @@ export default function Projects() {
       <section className="bg-graphite py-14 md:py-20">
         <div className="wrap grid items-center gap-10 lg:grid-cols-[1fr_1.1fr]">
           <div>
-            <SectionHead label="Footprint" title="Our presence" intro={`Projects delivered across ${projectStates.join(", ")}, all fabricated at our Palwal plant.`} />
+            <SectionHead label="Footprint" title="Our presence" intro={`Projects delivered across ${projectStatesText}, all fabricated at our Palwal plant in Haryana.`} />
             <ul className="mt-8 space-y-2 text-[15px]" data-stagger="0.03">
               {projects.map((p) => (
                 <li key={p.slug} className="flex justify-between gap-4 border-b border-[var(--line)] pb-2">

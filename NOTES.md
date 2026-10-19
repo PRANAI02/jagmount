@@ -23,7 +23,7 @@ Sources: company brochure PDF + the clients' completion certificates (scope, ton
 - Client status PDF: ~/Downloads/Jagmount website revision - status 19 Oct 2026.pdf
 
 ## Images
-All brochure JPGs were upscaled ~2x (Lanczos + light unsharp) and next/image serves q90 (`images.qualities: [90]`) so retina/Safari gets 1080 to 1600 px files. Replace with originals when the client sends them.
+All brochure photos (not certificates or spec drawings) were AI-upscaled 4x with Real-ESRGAN (realesrgan-x4plus) from the original brochure files, then capped at 2000 px and next/image serves q90 (`images.qualities: [90]`) so retina/Safari gets 1080 to 1600 px files. Replace with originals when the client sends them.
 
 ## Needs external setup (env vars in Vercel → jagmount → Settings → Environment Variables)
 | Variable | What | Without it |
@@ -44,7 +44,7 @@ Without RESEND the enquiry is still stored in the tracker and the buyer is nudge
 - Profile sheeting and shearing machines: hidden text in the brochure, no photos. Shown nowhere until confirmed.
 - Quality procedures, inspection records, material traceability, plate thickness / member size ranges, paint systems: not stated anywhere we have. Manufacturing only lists verified items.
 - Scope/challenge write-ups for projects without a completion certificate (Amber, RPM, Laxmi, Gopal Garden).
-- Presence map now = brochure states + featured-project states (MP, Uttarakhand). "Farukhnagar, UP" and "Laxmi: Saharanpur, Uttarakhand (brochure)" vs UP on site.
+- Presence map = exactly the brochure map (Haryana plant; HP, Rajasthan, UP, Bihar, Maharashtra). Note the featured projects in Indore (MP) and Haridwar (Uttarakhand) are in states the brochure map does not mark: ask the client. "Farukhnagar, UP" and "Laxmi: Saharanpur, Uttarakhand (brochure)" vs UP on site.
 - Certificate figures read from small scans: Inoflex ≈1,250 MT / 6 months; KS 450 MT; Garg 175 MT; Ambika 3.5 months.
 - Suspected stock/AI images in the brochure (solar-aerial, fab-hall, g06, lattice) are no longer used on key pages.
 - Domain: `metadataBase` + sitemap use jagmount.vercel.app; switch when jagmount.com points here.

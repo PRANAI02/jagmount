@@ -5,7 +5,7 @@ import SectionHead from "@/components/SectionHead";
 import IndiaMap from "@/components/IndiaMap";
 import Lightbox from "@/components/Lightbox";
 import Button from "@/components/Button";
-import { certificates, codes, company, journeys, metrics, projectStates, why } from "@/lib/content";
+import { certificates, codes, company, journeys, metrics, projectStatesText, why } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "About",
@@ -156,7 +156,7 @@ export default function About() {
             <IndiaMap className="h-auto w-full" />
           </div>
           <div>
-            <SectionHead label="Our presence" title="Our presence" intro={`Projects delivered across ${projectStates.join(", ")}.`} />
+            <SectionHead label="Our presence" title="Our presence" intro={`Manufacturing in Haryana, with projects delivered across ${projectStatesText}.`} />
             <div className="mt-8 grid gap-6 sm:grid-cols-2" data-stagger>
               <div className="border-l-2 border-orange pl-5">
                 <div className="mono text-[10px] text-orange">Head office</div>
