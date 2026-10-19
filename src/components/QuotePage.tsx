@@ -24,7 +24,7 @@ const copy = {
 export default function QuotePage({ kind }: { kind: FormKind }) {
   const c = copy[kind];
   return (
-    <section className="wrap grid gap-12 pb-20 pt-32 md:pt-40 lg:grid-cols-[1.6fr_1fr] lg:gap-16">
+    <section className="wrap grid gap-12 pb-20 pt-36 md:pt-48 lg:grid-cols-[1.6fr_1fr] lg:gap-16">
       <div>
         <div className="mono mb-4 flex items-center gap-3 text-[11px] text-orange">
           <span className="h-2 w-2 bg-orange" />
@@ -40,7 +40,7 @@ export default function QuotePage({ kind }: { kind: FormKind }) {
           <EnquiryForm kind={kind} />
         </div>
       </div>
-      <aside className="space-y-4 self-start lg:sticky lg:top-32" data-stagger>
+      <aside className="space-y-4 self-start lg:sticky lg:top-40" data-stagger>
         <div className="bg-graphite p-6">
           <div className="mono mb-4 text-[11px] text-mute">What happens next</div>
           <ol className="space-y-3">

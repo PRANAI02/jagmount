@@ -105,7 +105,7 @@ export default function LeadTracker() {
 
   const sel = "border border-[var(--line-strong)] bg-white px-2 py-1.5 text-[13px]";
   return (
-    <section className="wrap pb-20 pt-32 md:pt-36">
+    <section className="wrap pb-20 pt-36 md:pt-48">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="mono text-[11px] text-orange">Internal</div>

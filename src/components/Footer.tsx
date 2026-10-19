@@ -29,7 +29,7 @@ export default function Footer() {
 
       <div className="wrap grid gap-10 border-t border-[var(--line)] py-12 sm:grid-cols-2 lg:grid-cols-5">
         <div className="lg:col-span-2">
-          <Image src="/img/site/logo-dark.png" alt="Jagmount Projects" width={1749} height={582} className="mb-5 h-14 w-auto" />
+          <Image src="/img/site/logo-dark.png" alt="Jagmount Projects" width={1749} height={582} className="mb-5 h-16 w-auto" />
           <p className="max-w-xs text-sm text-mute">
             {company.legal}. Pre-engineered buildings and structural steel fabrication from our plant in Palwal, Haryana.
           </p>

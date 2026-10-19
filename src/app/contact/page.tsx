@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function Contact() {
   return (
     <>
-      <section className="wrap pb-12 pt-32 md:pt-40">
+      <section className="wrap pb-12 pt-36 md:pt-48">
         <div className="mono mb-5 flex items-center gap-3 text-[11px] text-orange">
           <span className="h-2 w-2 bg-orange" />
           Contact

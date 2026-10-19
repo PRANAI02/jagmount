@@ -22,7 +22,7 @@ export default function PageHero({
   children?: React.ReactNode;
 }) {
   return (
-    <section className="wrap grid gap-10 pb-14 pt-32 md:pb-20 md:pt-40 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16">
+    <section className="wrap grid gap-10 pb-14 pt-36 md:pb-20 md:pt-48 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16">
       <div>
         <div className="mono mb-5 flex items-center gap-3 text-[11px] text-orange">
           <span className="h-2 w-2 bg-orange" />

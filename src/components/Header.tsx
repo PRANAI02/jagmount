@@ -111,9 +111,9 @@ export default function Header() {
             {company.email}
           </a>
         </div>
-        <div className="wrap flex h-[76px] items-center justify-between gap-6 md:h-[88px]">
+        <div className="wrap flex h-[88px] items-center justify-between gap-6 md:h-[112px]">
           <Link href="/" aria-label="Jagmount Projects home" className="relative z-10 shrink-0">
-            <Image src="/img/site/logo-dark.png" alt="Jagmount Projects" width={1749} height={582} priority className="h-11 w-auto md:h-14" />
+            <Image src="/img/site/logo-dark.png" alt="Jagmount Projects" width={1749} height={582} priority className="h-[60px] w-auto md:h-20" />
           </Link>
 
           <nav className="hidden items-center xl:flex" aria-label="Primary">
@@ -159,7 +159,7 @@ export default function Header() {
 
       <div ref={menu} className="fixed inset-0 z-[65] xl:hidden" style={{ visibility: "hidden" }} data-lenis-prevent>
         <div data-m-panel className="absolute inset-0 bg-white" />
-        <div className="wrap relative flex h-full flex-col justify-between overflow-y-auto pb-8 pt-28">
+        <div className="wrap relative flex h-full flex-col justify-between overflow-y-auto pb-8 pt-32">
           <ul className="space-y-1">
             {nav.map((n) => (
               <li key={n.href}>

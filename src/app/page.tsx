@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <>
       {/* hero: real photograph, recommended headline, two journeys */}
-      <section className="wrap grid gap-10 pb-14 pt-32 md:pb-20 md:pt-40 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14">
+      <section className="wrap grid gap-10 pb-14 pt-36 md:pb-20 md:pt-48 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14">
         <div>
           <div className="mono mb-5 flex items-center gap-3 text-[11px] text-orange">
             <span className="h-2 w-2 bg-orange" />
