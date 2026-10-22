@@ -49,7 +49,7 @@ export const journeys = {
     cta: "Request Fabrication Pricing",
     title: "Structural steel fabrication & jobwork",
     who: ["PEB manufacturers", "EPC contractors", "Structural steel fabricators", "Industrial engineering companies"],
-    body: "Built-up members fabricated to your drawings at our Palwal plant, on CNC plasma cutting, an automated H-beam line and pull-through welding.",
+    body: "Built-up members fabricated to your drawings at our Palwal plant, with cutting, welding, fit-up, finishing and painting all in-house. Plates 5 to 35 mm, members up to 1,500 mm wide.",
     points: ["Built-up beams, columns & rafters", "Crane beams & platforms", "Other structural steel to drawing"],
   },
 };
@@ -206,8 +206,29 @@ export const process = [
   { n: "01", title: "Design", body: "Concept, load analysis and design in STAAD Pro to AISC and Indian Standards." },
   { n: "02", title: "Detailing", body: "Members, plates and connections detailed in Tekla Structures and AutoCAD." },
   { n: "03", title: "Cutting", body: "Plates profiled on the CNC plasma cutter (Hypertherm Maxpro 200)." },
-  { n: "04", title: "Assembly & welding", body: "Sections assembled on the H-beam line and welded on the PTW machine." },
-  { n: "05", title: "Dispatch & erection", body: "Members dispatched to site and erected with structure and sheeting to handover." },
+  { n: "04", title: "Fit-up & welding", body: "Sections fitted up and assembled on the H-beam line, then welded on the PTW machine." },
+  { n: "05", title: "Finishing & painting", body: "Members cleaned, finished and painted in-house to the project's paint specification." },
+  { n: "06", title: "Inspection & dispatch", body: "Checked against the drawings, documented and dispatched to site for erection and handover." },
+];
+
+/** In-house operations and stated technical range (client, Oct 2026). */
+export const operations = ["CNC plasma cutting", "Built-up beam fabrication", "Welding", "Fit-up", "Finishing", "Painting"];
+
+export const capabilities: [string, string][] = [
+  ["Plate thickness", "5 mm to 35 mm"],
+  ["Maximum member width", "Up to 1,500 mm"],
+  ["Steel grades", "350 MPa and above"],
+  ["Paint & finishing", "Systems to project specification, within our plant's capability"],
+];
+
+/** QA/QC stages the client asked for (Oct 2026). Records supplied as each project requires; client to confirm final detail. */
+export const quality = [
+  { title: "Material inspection", body: "Incoming plates and sections are checked for grade, thickness and condition before they enter production." },
+  { title: "Material traceability", body: "Plates are tracked from receipt through cutting and fabrication, so each member can be traced back to its source material." },
+  { title: "Mill test certificates", body: "Mill test certificates for the steel used are kept on file and shared where the project calls for them." },
+  { title: "Dimensional checks", body: "Cut parts and finished members are checked against the shop drawings for length, depth, flange width and hole positions." },
+  { title: "Welding inspection", body: "Welds are inspected for size, continuity and finish before members move on to painting." },
+  { title: "Dispatch documentation", body: "Each consignment leaves with its member list and dispatch documents, matched to the erection drawings." },
 ];
 
 export type Project = {
@@ -218,10 +239,11 @@ export type Project = {
   sqft?: number;
   img: string;
   type: string;
-  /** facts from the client's completion certificate, where one exists */
-  scope?: string;
+  /** figures from the client's case-study sheet (Oct 2026); Garg from its completion certificate */
   tonnage?: string;
   duration?: string;
+  challenge?: string;
+  scope?: string;
   completed?: string;
   cert?: string;
   note?: string;
@@ -230,36 +252,54 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "inoflex", name: "Inoflex", place: "Indore", state: "Madhya Pradesh", sqft: 95000, img: "/img/projects/inoflex-indore.jpg", type: "Pre-engineered building",
-    scope: "PEB project designed, fabricated and handed over to approved drawings, specifications and quality standards.",
-    tonnage: "≈1,250 MT", duration: "Within 6 months", completed: "Oct 2025", cert: "/img/certs/inoflex-completion.jpg",
-    note: "Our largest build to date: around 1,250 MT of structural steel for a 95,000 sq ft facility, completed and handed over within six months.",
+    tonnage: "Approx. 650 MT", duration: "15 weeks", challenge: "Multiple building height levels", completed: "Oct 2025", cert: "/img/certs/inoflex-completion.jpg",
+    note: "Our largest build to date: a 95,000 sq ft pre-engineered building with several roof height levels under one structure.",
   },
-  { slug: "amber", name: "Amber Group", place: "Farukhnagar", state: "Uttar Pradesh", sqft: 70000, img: "/img/projects/amber-group.jpg", type: "Pre-engineered building" },
   {
-    slug: "ks-industries", name: "KS Industries", place: "Haridwar", state: "Uttarakhand", sqft: 60000, img: "/img/projects/ks-industries.jpg", type: "Pre-engineered building",
-    scope: "Complete supply and erection of the pre-engineered building with structure and sheeting.",
-    tonnage: "450 MT", duration: "May to Sep 2025 (under 4 months)", completed: "Sep 2025", cert: "/img/certs/ks-completion.jpg",
-    note: "450 tonnes supplied and erected with structure and sheeting, from start to handover in under four months.",
+    slug: "amber", name: "Amber Group", place: "Farukhnagar", state: "Uttar Pradesh", sqft: 70000, img: "/img/projects/amber-group.jpg", type: "Structural steel",
+    tonnage: "Approx. 250 MT", duration: "3 weeks",
+    note: "Around 250 tonnes of structural steel delivered in three weeks.",
   },
-  { slug: "rpm-creations", name: "RPM Creations", place: "Ghaziabad", state: "Uttar Pradesh", sqft: 50000, img: "/img/projects/rpm-creations.jpg", type: "Pre-engineered building" },
-  { slug: "laxmi", name: "Laxmi Engineering", place: "Saharanpur", state: "Uttar Pradesh", sqft: 35000, img: "/img/projects/laxmi-saharanpur.jpg", type: "Pre-engineered building" },
-  { slug: "jagwati-metals", name: "Jagwati Metals", place: "Palwal", state: "Haryana", sqft: 31000, img: "/img/projects/jagwati-palwal.jpg", type: "Our own fabrication plant" },
   {
-    slug: "ambika", name: "Ambika Engineering Works", place: "Haridwar", state: "Uttarakhand", sqft: 27000, img: "/img/projects/ambika.jpg", type: "Pre-engineered building",
-    scope: "PEB project completed to the approved drawings, specifications and agreed scope of work.",
-    duration: "3.5 months", completed: "Sep 2025", cert: "/img/certs/aew-completion.jpg",
-    note: "Completed in three and a half months to the approved drawings and agreed scope.",
+    slug: "ks-industries", name: "KS Industries", place: "Haridwar", state: "Uttarakhand", sqft: 60000, img: "/img/projects/ks-industries.jpg", type: "Steel structure",
+    tonnage: "Approx. 300 MT", duration: "4 weeks", completed: "Sep 2025", cert: "/img/certs/ks-completion.jpg",
+  },
+  {
+    slug: "rpm-creations", name: "RPM Creations", place: "Ghaziabad", state: "Uttar Pradesh", sqft: 50000, img: "/img/projects/rpm-creations.jpg", type: "Pre-engineered building",
+    tonnage: "Approx. 320 MT", duration: "11 weeks",
+  },
+  {
+    slug: "laxmi", name: "Laxmi Engineering", place: "Saharanpur", state: "Uttar Pradesh", sqft: 35000, img: "/img/projects/laxmi-saharanpur.jpg", type: "Pre-engineered building",
+    tonnage: "Approx. 180 MT", duration: "10 weeks",
+  },
+  {
+    slug: "jagwati-metals", name: "Jagwati Metals", place: "Palwal", state: "Haryana", sqft: 31000, img: "/img/projects/jagwati-palwal.jpg", type: "Pre-engineered building",
+    tonnage: "Approx. 200 MT", duration: "12 weeks",
+    note: "The building that houses our own fabrication plant.",
+  },
+  {
+    slug: "ambika", name: "Ambika Engineering Works", place: "Haridwar", state: "Uttarakhand", sqft: 27000, img: "/img/projects/ambika.jpg", type: "Steel structure",
+    tonnage: "Approx. 150 MT", duration: "5 weeks", completed: "Sep 2025", cert: "/img/certs/aew-completion.jpg",
+  },
+  {
+    slug: "gopal-garden", name: "Gopal Garden", place: "Faridabad", state: "Haryana", sqft: 10000, img: "/img/projects/gopal-garden.jpg", type: "Multi-storey building with mezzanine floors",
+    tonnage: "Approx. 150 MT", duration: "8 weeks", challenge: "Box columns",
   },
   {
     slug: "garg", name: "Garg Plywood & Hardware Store", place: "Mathura", state: "Uttar Pradesh", img: "/img/certs/garg-completion.jpg", type: "Pre-engineered building",
     scope: "Complete supply and erection of the pre-engineered building with structure and sheeting.",
-    tonnage: "175 MT", duration: "May to Aug 2025 (about 3 months)", completed: "Aug 2025", cert: "/img/certs/garg-completion.jpg",
-    note: "175 tonnes supplied and erected with structure and sheeting in about three months.",
+    tonnage: "175 MT", duration: "About 3 months (May to Aug 2025)", completed: "Aug 2025", cert: "/img/certs/garg-completion.jpg",
   },
-  { slug: "gopal-garden", name: "Gopal Garden", place: "Faridabad", state: "Haryana", sqft: 10000, img: "/img/projects/gopal-garden.jpg", type: "Box column structure" },
 ];
 
-/** Brochure presence-map states plus MP and Uttarakhand (featured projects there; awaiting client confirmation). */
+/** Engineering milestone from the client's case-study sheet; dimensions, grade and project still to be confirmed. */
+export const milestone = {
+  title: "4-ton single-piece main beam",
+  body: "A main beam weighing 4 tonnes, fabricated as a single piece at our Palwal plant.",
+  facts: [["Component", "Main beam"], ["Weight", "4 tonnes, single piece"], ["Fabricated at", "Palwal, Haryana"]] as [string, string][],
+};
+
+/** Brochure presence-map states plus MP and Uttarakhand (Inoflex, KS Industries, Ambika; confirmed by the client Oct 2026). */
 export const projectStates = ["Himachal Pradesh", "Uttarakhand", "Rajasthan", "Uttar Pradesh", "Madhya Pradesh", "Bihar", "Maharashtra"];
 export const projectStatesText = `${projectStates.slice(0, -1).join(", ")} and ${projectStates.at(-1)}`;
 

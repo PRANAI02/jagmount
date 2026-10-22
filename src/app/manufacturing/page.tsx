@@ -7,12 +7,12 @@ import PlasmaReveal from "@/components/PlasmaReveal";
 import Lightbox from "@/components/Lightbox";
 import Button from "@/components/Button";
 import PlantCard from "@/components/PlantCard";
-import { codes, company, journeys, metrics } from "@/lib/content";
+import { capabilities, codes, company, journeys, metrics, operations, quality } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Manufacturing",
   description:
-    "Jagmount's Palwal plant: 6000 MT annual capacity with CNC plasma cutting (Hypertherm Maxpro 200), an automated H-beam line and pull-through welding. Send your drawings for a fabrication quote.",
+    "Jagmount's Palwal plant: 6000 MT annual capacity, CNC plasma cutting, built-up beams, welding, fit-up, finishing and painting in-house. Plates 5 to 35 mm, members up to 1,500 mm wide, 350 MPa and above. Send your drawings for a fabrication quote.",
 };
 
 const plantShots = [
@@ -34,7 +34,7 @@ const qualification: { title: string; items: string[] }[] = [
     title: "Materials on our product sheets",
     items: ["Purlins: 345 MPa yield, pre-galvanised 120 / 180 / 275 GSM, 1.5 to 3.0 mm", "Roof & wall sheets: ASTM A792M Grade 345, 0.3 to 0.8 mm", "Bracing: IS 2062, 250 / 345 MPa"],
   },
-  { title: "Documents we can share", items: ["DPIIT recognition certificate", "Udyam (MSME) registration", "Client completion certificates with scope, tonnage and dates"] },
+  { title: "Documents we can share", items: ["Mill test certificates for the steel supplied", "Dispatch documentation with each consignment", "DPIIT recognition and Udyam (MSME) registration", "Client completion certificates"] },
 ];
 
 export default function Manufacturing() {
@@ -48,8 +48,8 @@ export default function Manufacturing() {
         intro="Our Palwal plant is equipped with cutting, assembly and welding machinery and backed by skilled professionals and quality control at every stage of production."
         meta={[
           ["Capacity", `${metrics.capacity} MT/yr`],
-          ["Cutting", "CNC plasma"],
-          ["Welding", "H-beam + PTW"],
+          ["Plate", "5 to 35 mm"],
+          ["Member width", "Up to 1,500 mm"],
           ["Location", "Palwal, HR"],
         ]}
       >
@@ -66,6 +66,40 @@ export default function Manufacturing() {
         <MachineGrid />
       </section>
 
+      <section className="wrap grid gap-10 border-t border-[var(--line)] py-14 md:py-20 lg:grid-cols-2">
+        <div>
+          <SectionHead
+            label="Capabilities"
+            title="In-house operations"
+            intro="Every stage from cut plate to painted member happens at our Palwal plant, so quality and schedule stay in our hands."
+          />
+          <ul className="mt-8 grid grid-cols-2 gap-x-6 gap-y-3 text-[15px]" data-stagger="0.04">
+            {operations.map((o) => (
+              <li key={o} className="flex items-center gap-3 border-b border-[var(--line)] pb-3">
+                <span className="h-1.5 w-1.5 shrink-0 bg-orange" />
+                {o}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold" data-reveal>
+            Technical range
+          </h3>
+          <dl className="mt-4 border-t border-[var(--line)]" data-stagger="0.04">
+            {capabilities.map(([k, v]) => (
+              <div key={k} className="grid gap-1 border-b border-[var(--line)] py-3.5 sm:grid-cols-[190px_1fr]">
+                <dt className="text-[14px] text-mute">{k}</dt>
+                <dd className="text-[15px] font-medium">{v}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-4 text-[14px] text-mute" data-reveal>
+            Individual requirements are confirmed against your project specification and production feasibility at quotation.
+          </p>
+        </div>
+      </section>
+
       <section className="bg-graphite py-14 md:py-20">
         <div className="wrap">
           <SectionHead label="Process" title="From plate to erected frame" className="mb-12" />
@@ -73,7 +107,24 @@ export default function Manufacturing() {
         </div>
       </section>
 
-      <section className="wrap py-14 md:py-20">
+      <section id="quality" className="wrap scroll-mt-28 py-14 md:py-20">
+        <SectionHead
+          label="QA / QC"
+          title="Quality assurance and quality control"
+          intro="Checks run from the steel we receive to the consignment we dispatch. Inspection records and documents are supplied as your project specification requires."
+          className="mb-10"
+        />
+        <div className="grid gap-px border border-[var(--line-strong)] bg-[var(--line-strong)] sm:grid-cols-2 lg:grid-cols-3" data-stagger="0.06">
+          {quality.map((q) => (
+            <div key={q.title} className="bg-white p-6">
+              <h3 className="text-lg font-semibold">{q.title}</h3>
+              <p className="mt-2 text-[15px] leading-relaxed text-bone/70">{q.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="wrap border-t border-[var(--line)] py-14 md:py-20">
         <SectionHead
           label="Supplier qualification"
           title="Quality, standards and documentation"

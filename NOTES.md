@@ -37,13 +37,25 @@ All brochure photos (not certificates or spec drawings) were AI-upscaled 4x with
 GA4 events: `generate_lead` (form accepted by server, param `form`=peb/fabrication), `drawing_upload`, `phone_click`, `whatsapp_click`, `email_click`, `cta_click`. Mark `generate_lead` as a key event in GA4.
 Without RESEND the enquiry is still stored in the tracker and the buyer is nudged to also send it on WhatsApp.
 
+## Client answers (Oct 22 2026, from Pulkit Mangla) + case-study sheet
+- info@jagmount.com is the company email and receives PEB and fabrication enquiries (code default; no FABRICATION_TO needed).
+- Enquiries go first to Pulkit Mangla: new leads default to follow-up owner "Pulkit Mangla" in /leads.
+- New site goes live on jagmount.com (no existing site). **When changing DNS, keep the existing MX / SPF / DKIM / TXT records untouched** so their email keeps working; only add/replace the apex A record and www CNAME for Vercel. Resend records are additive (a `send.` subdomain), they don't touch MX on the root.
+- No Google Analytics account yet.
+- MP and Uttarakhand confirmed on the presence map.
+- Fit-up, finishing and painting are in-house (Process now 6 steps; Manufacturing "In-house operations").
+- Technical range: plate 5 to 35 mm, member width up to 1,500 mm, 350 MPa and above. Paint systems wording is vague in their reply.
+- QA/QC section on /manufacturing#quality drafted from their list (material inspection, traceability, MTCs, dimensional, welding, dispatch docs). Client still to confirm final details/records.
+- Project figures now come from `Jagmount_Projects_Case_Studies.docx`. **They differ from what we read off the certificate scans**: Inoflex 650 MT / 15 weeks (cert read ≈1,250 MT / 6 months), KS 300 MT / 4 weeks (cert 450 MT, May to Sep), Ambika 5 weeks (cert 3.5 months). Site uses the client sheet. Garg is not in the sheet; it keeps its certificate figures.
+- Milestone: 4-ton single-piece main beam (Projects page). Dimensions, grade, project, inspection still to be confirmed.
+
 ## Confirm with the client
 - Founder photos (slots ready on About; set `photo` in `src/app/about/page.tsx`, files in `public/img/founders/`).
 - The "one additional client": we added Laxmi Engineering (a featured project missing from the wall). Send name + logo if they meant someone else.
 - Higher-resolution photos, especially the hero (gallery/g18) and the Services image. Brochure photos are 400 to 800 px.
 - Profile sheeting and shearing machines: hidden text in the brochure, no photos. Shown nowhere until confirmed.
-- Quality procedures, inspection records, material traceability, plate thickness / member size ranges, paint systems: not stated anywhere we have. Manufacturing only lists verified items.
-- Scope/challenge write-ups for projects without a completion certificate (Amber, RPM, Laxmi, Gopal Garden).
+- QA/QC final details and available records (section drafted from their list).
+- Which figure is right for Inoflex / KS / Ambika (sheet vs certificate), and Laxmi's logo.
 - Presence map = exactly the brochure map (Haryana plant; HP, Rajasthan, UP, Bihar, Maharashtra). Note the featured projects in Indore (MP) and Haridwar (Uttarakhand) are in states the brochure map does not mark: ask the client. "Farukhnagar, UP" and "Laxmi: Saharanpur, Uttarakhand (brochure)" vs UP on site.
 - Certificate figures read from small scans: Inoflex ≈1,250 MT / 6 months; KS 450 MT; Garg 175 MT; Ambika 3.5 months.
 - Suspected stock/AI images in the brochure (solar-aerial, fab-hall, g06, lattice) are no longer used on key pages.

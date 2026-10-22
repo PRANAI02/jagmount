@@ -4,13 +4,11 @@ import { journeys, projects } from "@/lib/content";
 import CertThumb from "./CertThumb";
 
 /**
- * Project cards. Projects with a completion certificate show the documented
- * scope, tonnage and timeline from that certificate; the rest show what the
- * brochure records (location, area, structure type).
+ * Project cards: project type, steel quantity and delivery period from the
+ * client's case-study sheet, with the completion certificate where one exists.
  */
-export default function CaseStudies({ limit, documentedOnly = false }: { limit?: number; documentedOnly?: boolean }) {
-  let list = documentedOnly ? projects.filter((p) => p.scope) : [...projects.filter((p) => p.scope), ...projects.filter((p) => !p.scope)];
-  if (limit) list = list.slice(0, limit);
+export default function CaseStudies({ limit }: { limit?: number }) {
+  const list = limit ? projects.slice(0, limit) : projects;
   return (
     <div className="grid gap-4 md:grid-cols-2" data-stagger="0.08">
       {list.map((p) => (
@@ -31,7 +29,7 @@ export default function CaseStudies({ limit, documentedOnly = false }: { limit?:
             <h3 className="display mt-1.5 text-[clamp(19px,1.7vw,24px)]">{p.name}</h3>
             <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2.5 text-[14px]">
               <div>
-                <dt className="mono text-[10px] text-mute">Structure</dt>
+                <dt className="mono text-[10px] text-mute">Project type</dt>
                 <dd>{p.type}</dd>
               </div>
               {p.sqft && (
@@ -42,14 +40,20 @@ export default function CaseStudies({ limit, documentedOnly = false }: { limit?:
               )}
               {p.tonnage && (
                 <div>
-                  <dt className="mono text-[10px] text-mute">Steel</dt>
+                  <dt className="mono text-[10px] text-mute">Steel quantity</dt>
                   <dd>{p.tonnage}</dd>
                 </div>
               )}
               {p.duration && (
                 <div>
-                  <dt className="mono text-[10px] text-mute">Timeline</dt>
+                  <dt className="mono text-[10px] text-mute">Delivery period</dt>
                   <dd>{p.duration}</dd>
+                </div>
+              )}
+              {p.challenge && (
+                <div className="col-span-2">
+                  <dt className="mono text-[10px] text-mute">Special requirement</dt>
+                  <dd>{p.challenge}</dd>
                 </div>
               )}
             </dl>

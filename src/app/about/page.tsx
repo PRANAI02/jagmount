@@ -5,7 +5,7 @@ import SectionHead from "@/components/SectionHead";
 import IndiaMap from "@/components/IndiaMap";
 import Lightbox from "@/components/Lightbox";
 import Button from "@/components/Button";
-import { certificates, codes, company, journeys, metrics, projectStatesText, why } from "@/lib/content";
+import { capabilities, certificates, codes, company, journeys, metrics, operations, projectStatesText, why } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "About",
@@ -24,6 +24,8 @@ const facts: [string, string][] = [
   ["Projects delivered", metrics.delivered],
   ["Manufacturing unit", company.plant.join(", ")],
   ["Annual capacity", `${metrics.capacity} MT of structural steel`],
+  ["In-house operations", operations.join(" · ")],
+  ...capabilities.slice(0, 3),
   ["Head office", company.headOffice.join(", ")],
   ["Registrations", "DPIIT recognised · Udyam registered (MSME)"],
   ["Design codes", "AISC · Indian Standards"],

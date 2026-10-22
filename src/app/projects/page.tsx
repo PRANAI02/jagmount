@@ -6,16 +6,16 @@ import IndiaMap from "@/components/IndiaMap";
 import Lightbox from "@/components/Lightbox";
 import ClientWall from "@/components/ClientWall";
 import Button from "@/components/Button";
-import { certificates, clients, gallery, journeys, metrics, projects, projectStatesText } from "@/lib/content";
+import { certificates, clients, gallery, journeys, metrics, milestone, projects, projectStatesText } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Projects",
   description:
-    "Pre-engineered buildings delivered by Jagmount across Uttar Pradesh, Uttarakhand, Madhya Pradesh, Haryana and beyond, with scope, tonnage and timelines from client completion certificates.",
+    "Pre-engineered buildings and steel structures delivered by Jagmount across Uttar Pradesh, Uttarakhand, Madhya Pradesh, Haryana and beyond, with steel quantity and delivery period for each project.",
 };
 
 export default function Projects() {
-  const documented = projects.filter((p) => p.scope).length;
+  const certified = projects.filter((p) => p.cert).length;
   return (
     <>
       <PageHero
@@ -23,11 +23,11 @@ export default function Projects() {
         title="Our projects"
         img="/img/gallery/g17.jpg"
         imgAlt="Completed industrial facility"
-        intro={`${metrics.delivered} projects delivered. Below are ${projects.length} featured builds; for ${documented} of them the client's completion certificate records our scope of work, the steel tonnage and the timeline.`}
+        intro={`${metrics.delivered} projects delivered across pre-engineered buildings, structural steel and multi-storey buildings. Below are ${projects.length} featured builds with the steel quantity and delivery period for each.`}
         meta={[
           ["Delivered", metrics.delivered],
           ["Featured", String(projects.length)],
-          ["Largest", "95,000 sq ft"],
+          ["Largest", "650 MT"],
           ["Clients", String(clients.length)],
         ]}
       >
@@ -38,10 +38,26 @@ export default function Projects() {
         <SectionHead
           label="Case studies"
           title="Featured projects"
-          intro="Scope, tonnage and timelines are taken from the completion certificates our clients issued. Tap 'View certificate' to see the original."
+          intro={`Project type, approximate steel quantity and delivery period for each build. ${certified} projects also carry the completion certificate the client issued: tap 'View certificate' to see the original.`}
           className="mb-10"
         />
         <CaseStudies />
+
+        <div className="mt-10 grid gap-6 border border-[var(--line-strong)] bg-graphite p-6 md:grid-cols-[1.2fr_1fr] md:items-center md:p-8" data-reveal>
+          <div>
+            <div className="mono text-[11px] text-orange">Engineering milestone</div>
+            <h3 className="display mt-2 text-[clamp(22px,2.4vw,32px)]">{milestone.title}</h3>
+            <p className="mt-3 max-w-lg text-bone/70">{milestone.body}</p>
+          </div>
+          <dl className="border-t border-[var(--line)]">
+            {milestone.facts.map(([k, v]) => (
+              <div key={k} className="grid grid-cols-[130px_1fr] gap-3 border-b border-[var(--line)] py-3">
+                <dt className="text-[14px] text-mute">{k}</dt>
+                <dd className="text-[15px] font-medium">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </section>
 
       <section className="bg-graphite py-14 md:py-20">

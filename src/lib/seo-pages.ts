@@ -21,10 +21,10 @@ export type SeoPage = {
 const faqCommon = {
   codes: { q: "Which design codes and software do you use?", a: "Structures are designed to AISC and Indian Standards, analysed in STAAD Pro and detailed in Tekla Structures and AutoCAD." },
   capacity: { q: "What is your fabrication capacity?", a: "Our plant at Pingore, Palwal (Haryana) has an annual fabrication capacity of 6000 MT." },
-  files: { q: "What drawings can I send for a quote?", a: "PDF, DWG, DXF, Excel, images or a ZIP, up to 4 MB through the website form. Larger sets can be shared as a Google Drive, WeTransfer or Dropbox link, by email to info@jagmount.com, or on WhatsApp." },
+  files: { q: "What drawings can I send for a quote?", a: "PDF, DWG, DXF, Excel, images or a ZIP: up to 10 files of 100 MB each through the website form. Larger sets can be shared as a Google Drive, WeTransfer or Dropbox link, by email to info@jagmount.com, or on WhatsApp." },
   timeline: {
     q: "How long does a PEB project take?",
-    a: "It depends on size and scope. On recent projects our clients' completion certificates record 175 MT in about three months, 450 MT in under four months and around 1,250 MT handed over within six months.",
+    a: "It depends on size and scope. On recent projects we delivered around 180 MT in 10 weeks, 320 MT in 11 weeks and 650 MT, with multiple building height levels, in 15 weeks.",
   },
 };
 
@@ -165,13 +165,13 @@ export const seoPages: SeoPage[] = [
     metaTitle: "Heavy Steel Structure Fabrication",
     description: "Heavy structural steel fabrication: built-up columns and rafters, crane beams, box columns and multi-storey frames, from a 6000 MT plant in Palwal, Haryana.",
     intro:
-      "Our largest project to date used around 1,250 MT of structural steel for a 95,000 sq ft facility in Indore. Built-up sections, crane beams and box columns are fabricated in-house and erected by our teams.",
+      "We fabricate plates from 5 mm to 35 mm thick into members up to 1,500 mm wide, including a 4-ton main beam built as a single piece. Our largest project used around 650 MT of steel for a 95,000 sq ft facility in Indore. Built-up sections, crane beams and box columns are fabricated in-house and erected by our teams.",
     img: "/img/gallery/g19.jpg",
     imgAlt: "Heavy built-up members staged on site",
     journey: "fab",
     capabilities: [
       { title: "Built-up sections", body: "Heavy I-sections assembled on the H-beam line and welded on the PTW machine." },
-      { title: "Box columns", body: "Box column structures, such as Gopal Garden in Faridabad." },
+      { title: "Box columns", body: "Box columns, such as the multi-storey Gopal Garden building with mezzanine floors in Faridabad." },
       { title: "Crane buildings", body: "Crane beams and frames designed for the crane class of your facility." },
     ],
     scope: ["Built-up columns and rafters", "Crane beams", "Box columns", "Platforms and multi-storey frames"],

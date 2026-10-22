@@ -103,7 +103,8 @@ export async function POST(request: Request) {
     notified: false,
     status: "New",
     value: "",
-    owner: "",
+    // client: website enquiries go first to Pulkit Mangla, who assigns them on
+    owner: "Pulkit Mangla",
     followUp: "",
     quote: "Not started",
     outcome: "Open",
